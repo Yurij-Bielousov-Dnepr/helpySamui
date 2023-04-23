@@ -11,6 +11,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.admin.views.decorators import staff_member_required
 from . import views
+from .views import Events_detail
 
 app_name = "art_event"  # добавьте это, если используете пространства имен
 
@@ -24,6 +25,7 @@ urlpatterns = [
         name="update_article",
     ),
     path("art_event/events/", views.events, name="events"),
+    path('events/<int:pk>/', Events_detail.as_view(), name='event_detail'),
     path("art_event/events/add/", views.EventCreateView.as_view(), name="add_event"),
     path(
         "art_event/events/<int:pk>/update/",

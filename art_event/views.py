@@ -45,12 +45,12 @@ from django.views import View
 # Классы-представления для статей (Article)
 class ArticleListView(ListView):
     model = Article
-    template_name = "helpy/event_article/articles.html"
+    template_name = "art_event/articles.html"
     context_object_name = "articles"
 
-class Events(DetailView):
+class Events_detail(DetailView):
     model = Event
-    template_name = "art_event/events.html"
+    template_name = "art_event/event_detail.html"
     context_object_name = "event"
 
 def events(request):
@@ -64,8 +64,8 @@ def get_context_data(self, **kwargs):
     return context
 class EventCreateView(CreateView):
     model = Event
-    template_name = "helpy/event_article/add_event.html"
-    form_class = EventCreationForm
+    template_name = "art_event/add_event.html"
+    form_class = EventCreateView
     fields = ("title", "description", "date", "location", "tags", "is_favorite")
     success_url = reverse_lazy("events")
 
@@ -80,7 +80,7 @@ class EventUpdateView(View):
     def get(self, request, *args, **kwargs):
         event = get_object_or_404(Event, pk=kwargs["pk"])
         form = EventForm(instance=event)
-        return render(request, "art_event/event_form.html", {"form": form})
+        return render(request, "art_event/event_Update.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
         event = get_object_or_404(Event, pk=kwargs["pk"])
@@ -88,7 +88,7 @@ class EventUpdateView(View):
         if form.is_valid():
             form.save()
             return redirect("event_detail", pk=event.pk)
-        return render(request, "art_event/event_form.html", {"form": form})
+        return render(request, "art_event/event_Update.html", {"form": form})
 
 
 class EventDeleteView(DeleteView):
@@ -107,7 +107,7 @@ def favorites(request):
         "favorite_articles": favorite_articles,
         "favorite_events": favorite_events,
     }
-    return render(request, "favorites.html", context)
+    return render(request, "art_event/favorites.html", context)
 
 
 def add_article(request):
@@ -124,7 +124,7 @@ def add_article(request):
 
 class ArticleUpdateView(UpdateView):
     model = Article
-    template_name = "helpy/article_form.html"
+    template_name = "art_event/article_Update.html"
     fields = (
         "title",
         "content",
@@ -143,13 +143,8 @@ def add_event(request):
     return render(request, "art_event/add_event.html", {"form": form})
 
 
-
 def articles(request):
     return render(request, "art_event/articles.html")
-
-
-def events(request):
-    return render(request, "art_event/events.html")
 
 
 class ArticleFormView:
@@ -157,5 +152,5 @@ class ArticleFormView:
         return render(request, "art_event/articles.html")
 
 
-class ArticleDetailView:
-    pass
+# class ArticleDetailView:
+#     pass
