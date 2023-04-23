@@ -15,9 +15,7 @@ from .views import (
     review_helper,
     ReviewCreateView,
     ModerateView,
-    VIPView,
     review_list_helper,
-    my_view,
     review_detail,
 )
 
@@ -34,8 +32,6 @@ urlpatterns = [
         staff_member_required(ModerateView.as_view()),
         name="moderate",
     ),
-    path("reviews/vip/", VIPView.as_view(), name="vip"),
-    path("success/", views.success, name="success"),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

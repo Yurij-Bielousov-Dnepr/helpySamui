@@ -34,6 +34,16 @@ class ModerateView(ListView):
 
 # тут надо разобраться модернизировать вьюху чтобы она модерила все: статьи, события и отзывы
 
+@admin_only
+def moderation_view(request):
+    """
+    Представление для модерации статей и событий
+    """
+    articles = Article.objects.filter(is_approved=False)
+    events = Event.objects.filter(is_approved=False)
+    return render(
+        request, "admin_only.html", {"articles": articles, "events": events}
+    )
 
 @user_passes_test(lambda u: u.is_staff)
 def moderation(request):
@@ -80,7 +90,6 @@ def moderation(request):
         "reviews": reviews,
     }
     return render(request, "moderation.html", context)
-
 
 class ReviewCreateView(CreateView):
     model = Re_view
@@ -147,19 +156,6 @@ def review_detail(request, pk):
     }
     return render(request, "reviews/reviews_detail.html", context)
 
-
-@admin_only
-def moderation_view(request):
-    """
-    Представление для модерации статей и событий
-    """
-    articles = Article.objects.filter(is_approved=False)
-    events = Event.objects.filter(is_approved=False)
-    return render(
-        request, "admin_only.html", {"articles": articles, "events": events}
-    )
-
-
 def review_list(request):
     reviews = Review.objects.all()
     order = request.GET.get("order", "-created_at")
@@ -167,7 +163,7 @@ def review_list(request):
     page = request.GET.get("page")
     reviews = paginator.get_page(page)
     context = {"reviews": reviews, "order": order}
-    return render(request, "art_event/review.html", context=context)
+    return render(request, "reviews/reviews_list.html", context=context)
 
 
 def add_review(request):
@@ -190,4 +186,4 @@ def add_review(request):
             return redirect("reviews")
     else:
         form = ReviewForm()
-    return render(request, "art_event/add_review.html", {"form": form})
+    return render(request, "reviews/review_add.html", {"form": form})

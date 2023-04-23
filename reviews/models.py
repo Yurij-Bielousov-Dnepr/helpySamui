@@ -53,8 +53,6 @@ class Re_view(models.Model):
         return f"Review for {self.helper_name} by {self.reviewer_name}"
 
     # Review - для отзыва на статью или событие
-
-
 class Review(models.Model):
     RATING_CHOICES = (
         (1, "1 star"),
