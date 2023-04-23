@@ -9,7 +9,7 @@ from .models import *
 
 class EditVisitorProfileForm(forms.ModelForm):
     class Meta:
-        model = Visitor
+        model = MyUser
         fields = (
             "userNick",
             "category",
@@ -33,13 +33,13 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
-        model = Visitor
+        model = MyUser
         fields = ["username", "password"]
 
 
 class VisitorForm(forms.ModelForm):
     class Meta:
-        model = Visitor
+        model = MyUser
         fields = [
             "userNick",
             "category",

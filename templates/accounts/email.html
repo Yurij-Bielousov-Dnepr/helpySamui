@@ -6,7 +6,7 @@
 
 {% block content %}
 <h1>{% trans "E-mail Addresses" %}</h1>
-{% if visitor.email %}
+{% if MyUser.email %}
 
 <p>{% trans 'The following e-mail addresses are associated with your account:' %}</p>
 <form action="{% url 'account_email' %}" class="email_list" method="post">
@@ -15,8 +15,8 @@
 <div class="ctrlHolder">
       <label for="email_radio_1" class="primary_email">
 
-  <input id="email_radio_1" type="radio" name="email" checked="checked" value="{{visitor.email}}"/>
-{{ visitor.email }}
+  <input id="email_radio_1" type="radio" name="email" checked="checked" value="{{MyUser.email}}"/>
+{{ MyUser.email }}
 <span class="verified">{% trans "Verified" %}</span>
 <span class="primary">{% trans "Primary" %}</span>
 </label>

@@ -42,7 +42,7 @@ class EventCreateView(CreateView):
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'description', 'date', 'time', 'tags', 'location']
+        fields = ['title', 'description', 'date', 'tags', 'location']
 
 class EventUpdateView(UpdateView):
     model = Event

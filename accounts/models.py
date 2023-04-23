@@ -32,7 +32,8 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
 
-class User(AbstractBaseUser, PermissionsMixin):
+class MyUser(AbstractBaseUser, PermissionsMixin):
+    social_networks = models.CharField( max_length=100, null=True, blank=True, default=None )
     email = models.EmailField(unique=True)
     userNick = models.CharField(max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
@@ -83,7 +84,7 @@ class Stats(models.Model):
     help_requests = models.IntegerField(default=0)
     online_users = models.IntegerField(default=0)
     last_activity = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, blank=True
+        MyUser, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     class Meta:
@@ -168,7 +169,7 @@ class SupportLevel(models.Model):
 
 
 class Favorites(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, null=True, blank=True

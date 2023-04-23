@@ -211,4 +211,5 @@ SOCIALACCOUNT_PROVIDERS = {
     # ...Facebook, Twitter, Google
 }
 SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
+AUTH_USER_MODEL = 'accounts.MyUser'
 

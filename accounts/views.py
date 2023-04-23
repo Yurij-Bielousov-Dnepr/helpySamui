@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -7,8 +8,10 @@ from django.views import generic
 from .forms import AddEmailForm, RemoveEmailForm, EditVisitorProfileForm
 from .forms import VisitorForm
 from .forms import CustomAuthenticationForm
-from django.contrib.auth import views as auth_views
+from django.contrib.auth import views as auth_views, authenticate
 from django.views.generic import TemplateView, FormView
+from django.contrib.auth import login as auth_login
+from .models import User
 
 
 class LoginView(generic.FormView):
@@ -19,7 +22,7 @@ class LoginView(generic.FormView):
 
 @login_required
 def edit_visitor_profile(request):
-    visitor = request.user.visitor
+    visitor = request.user.User
     if request.method == "POST":
         form = EditVisitorProfileForm(request.POST, instance=visitor)
         if form.is_valid():
@@ -64,7 +67,7 @@ def account_email(request):
             return redirect(reverse_lazy("account_email"))
 
     context = {
-        "visitor": visitor,
+        "visitor": User,
         "visitor_form": visitor_form,
         "remove_form": remove_form,
     }
@@ -88,6 +91,9 @@ class LogoutView(auth_views.LogoutView):
         return redirect("login")
 
 
+def auth_login(request):
+    pass
+
 class SignupView(FormView):
     form_class = UserCreationForm
     template_name = "accounts/signup.html"
@@ -110,7 +116,7 @@ class SignupView(FormView):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=password)
-            login(request, user)
+            auth_login(request, user)  # авторизуем пользователя
             return redirect("home")
         else:
             messages.error(request, "Invalid form submission.")

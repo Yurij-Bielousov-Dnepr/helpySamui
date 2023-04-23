@@ -24,7 +24,6 @@ class ReviewUpdateView(UpdateView):
     success_url = reverse_lazy("moderate")
 
 
-
 class ModerateReview(ListView):
     """
     Представление для модерации отзывов

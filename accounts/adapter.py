@@ -1,5 +1,5 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from .models import Visitor
+from .models import MyUser
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
@@ -8,7 +8,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         data = sociallogin.account.extra_data
 
         # Создаем модель Visitor на основе данных социальной сети
-        visitor, created = Visitor.objects.get_or_create(
+        visitor, created = MyUser.objects.get_or_create(
             userNick=data.get("username", ""),
             category="Customer",  # По умолчанию
             is_sponsor=False,  # По умолчанию
@@ -16,8 +16,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             email=data.get("email", ""),
         )
 
-        # Добавляем в модель Visitor социальную сеть
+        # Добавляем в модель MyUser социальную сеть
         social_network = sociallogin.account.provider
-        visitor.social_networks.add(social_network)
+        MyUser.social_networks.add(social_network)
 
         return user

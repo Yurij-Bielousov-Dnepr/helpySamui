@@ -15,21 +15,24 @@ from .views import (
     review_helper,
     ReviewCreateView,
     ModerateReview,
+    review_edit,
     review_list_helper,
     review_detail,
 )
 
 app_name = "reviews"  # добавьте это, если используете пространства имен
-
+'reviews_add'
+'reviews_list'
 
 urlpatterns = [
-    path("reviews/review_helper/", review_helper(), name="review_helper"),
-    path("reviews/reviews/add/", ReviewCreateView.as_view(), name="reviews_add"),
-    path("reviews/reviews/", review_list_helper, name="reviews_list"),
-    path("reviews/reviews/<int:pk>/", review_detail, name="review_detail"),
+    path("reviews/review_helper/", review_helper, name="review_helper"),
+    path( 'review_edit/<int:pk>/', review_edit, name='review_edit' ),
+    path( "reviews/add/", ReviewCreateView.as_view(), name="reviews_add" ),
+    path( "reviews/", review_list_helper, name="reviews_list" ),
+    path("reviews/<int:pk>/", review_detail, name="review_detail"),
     path(
         "reviews/moderate/",
-        staff_member_required(ModerateView.as_view()),
+        staff_member_required(ModerateReview.as_view()),
         name=" moderation_view",
     ),
 ]
