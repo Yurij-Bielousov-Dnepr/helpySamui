@@ -14,7 +14,7 @@ from . import views
 from .views import (
     review_helper,
     ReviewCreateView,
-    ModerateView,
+    ModerateReview,
     review_list_helper,
     review_detail,
 )
@@ -23,14 +23,14 @@ app_name = "reviews"  # добавьте это, если используете
 
 
 urlpatterns = [
-    path("reviews/review_helper/", review_helper.as_view(), name="review_helper"),
+    path("reviews/review_helper/", review_helper(), name="review_helper"),
     path("reviews/reviews/add/", ReviewCreateView.as_view(), name="reviews_add"),
     path("reviews/reviews/", review_list_helper, name="reviews_list"),
     path("reviews/reviews/<int:pk>/", review_detail, name="review_detail"),
     path(
         "reviews/moderate/",
         staff_member_required(ModerateView.as_view()),
-        name="moderate",
+        name=" moderation_view",
     ),
 ]
 if settings.DEBUG:

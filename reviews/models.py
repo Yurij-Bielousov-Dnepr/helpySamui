@@ -62,6 +62,7 @@ class Review(models.Model):
         (5, "5 stars"),
     )
     helper = models.ForeignKey(Helper, on_delete=models.CASCADE)
-    # customer_name = models.CharField(max_length=255)
+    customer_name = models.CharField(max_length=255)
     rating = models.IntegerField(choices=RATING_CHOICES)
     comment = models.TextField()
+#

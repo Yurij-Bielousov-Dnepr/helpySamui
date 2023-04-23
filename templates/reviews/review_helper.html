@@ -7,5 +7,8 @@
     <p>{% trans "User reviews are important for evaluating the quality and usability of the website. Sorting and adding reviews are important components of the user experience. They allow users to quickly find the information they need and share their opinion. It is important to ensure the security of reviews by checking for spam and moderation." %}</p>
     <p><a href="{% url 'reviews_add' %}">{% trans "Add a review" %}</a></p>
     <p><a href="{% url 'reviews_list' %}">{% trans "See all reviews" %}</a></p>
+      {% if user.is_staff %}
+      <p><a href="{% url ' moderation_view' %}">{% trans "Moderation" %}</a></p>
+    {% endif %}
   </div>
 {% endblock %}

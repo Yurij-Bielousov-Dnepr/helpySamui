@@ -1,7 +1,7 @@
 # views.py
 # from .forms import HelperForm
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
@@ -9,9 +9,11 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
 from django.views.generic.edit import CreateView
+
+import reviews.models
 from .decorators import admin_only
 from .forms import *
-from .models import *
+from reviews.models import *
 
 
 @method_decorator(staff_member_required, name="dispatch")
@@ -22,34 +24,55 @@ class ReviewUpdateView(UpdateView):
     success_url = reverse_lazy("moderate")
 
 
-@method_decorator(staff_member_required, name="dispatch")
-class ModerateView(ListView):
+
+class ModerateReview(ListView):
+    """
+    Представление для модерации отзывов
+    """
     model = Review
     template_name = "moderation.html"
     context_object_name = "reviews"
 
     def get_queryset(self):
-        return Review.objects.filter(is_approved="0")
+         return Review.objects.filter(is_approved="0")
 
 
 # тут надо разобраться модернизировать вьюху чтобы она модерила все: статьи, события и отзывы
-
-@admin_only
+@method_decorator(staff_member_required, name="dispatch")
+# @admin_only
 def moderation_view(request):
     """
-    Представление для модерации статей и событий
+    Представление для модерации статей, событий и отзывов помощников
     """
     articles = Article.objects.filter(is_approved=False)
     events = Event.objects.filter(is_approved=False)
+    re_views = Re_view.objects.filter(is_approved=False)
     return render(
-        request, "admin_only.html", {"articles": articles, "events": events}
+        request, "moderation.html", {"articles": articles, "events": events, "reviews": re_views}
     )
+
+@login_required
+def review_edit(request, pk):
+    """
+    Представление для редактирования отзыва
+    """
+    review = get_object_or_404(reviews.models.Review, pk=pk)
+    if not request.user.is_staff and review.customer_name != request.user:
+        return redirect('review_detail', pk=review.pk)
+    if request.method == 'POST':
+        form = Review_editForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('review_detail', pk=review.pk)
+    else:
+        form = ReviewForm(instance=review)
+    return render(request, 'reviews/review_edit.html', {'form': form})
 
 @user_passes_test(lambda u: u.is_staff)
 def moderation(request):
     articles = Article.objects.filter(is_approved=False)
     events = Event.objects.filter(is_approved=False)
-    reviews = Review.objects.filter(is_approved=False)
+    re_views = Re_view.objects.filter(is_approved=False)
 
     if request.method == "POST":
         for obj in articles:
@@ -60,7 +83,7 @@ def moderation(request):
             elif action == "delete":
                 obj.delete()
             elif action == "edit":
-                return redirect("article_edit", obj.pk)
+                return redirect("update_article", obj.pk)
 
         for obj in events:
             action = request.POST.get("action_{}".format(obj.id))
@@ -72,7 +95,7 @@ def moderation(request):
             elif action == "edit":
                 return redirect("update_event", pk=obj.pk)
 
-        for obj in reviews:
+        for obj in re_views:
             action = request.POST.get("action_{}".format(obj.id))
             if action == "approve":
                 obj.is_approved = True
@@ -87,7 +110,7 @@ def moderation(request):
     context = {
         "articles": articles,
         "events": events,
-        "reviews": reviews,
+        "reviews": re_views,
     }
     return render(request, "moderation.html", context)
 
@@ -99,7 +122,7 @@ class ReviewCreateView(CreateView):
 
     def form_valid(self, form):
         review = form.save(commit=False)
-        review.reviewer_name = form.cleaned_data.get("reviewer_name")
+        review.customer_name = form.cleaned_data.get("customer_name")
         review.helper_name = form.cleaned_data.get("helper_name")
         review.rating = form.cleaned_data.get("rating")
         review.tag = form.cleaned_data.get("tag")
