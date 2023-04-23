@@ -25,7 +25,7 @@ class ReviewUpdateView(UpdateView):
 @method_decorator(staff_member_required, name="dispatch")
 class ModerateView(ListView):
     model = Review
-    template_name = "helpy/moderation.html"
+    template_name = "moderation.html"
     context_object_name = "reviews"
 
     def get_queryset(self):
@@ -79,13 +79,13 @@ def moderation(request):
         "events": events,
         "reviews": reviews,
     }
-    return render(request, "helpy/moderation.html", context)
+    return render(request, "moderation.html", context)
 
 
 class ReviewCreateView(CreateView):
     model = Re_view
     form_class = ReviewForm
-    template_name = "helpy/reviews/review_add.html"
+    template_name = "reviews/review_add.html"
     success_url = reverse_lazy("reviews:thanks")
 
     def form_valid(self, form):
@@ -115,7 +115,7 @@ def review_helper(request):
         "add_review_url": "reviews_add",
         "reviews_list_url": "reviews_list",
     }
-    return render(request, "helpy/reviews/review_helper.html", context)
+    return render(request, "reviews/review_helper.html", context)
 
 
 def review_list_helper(request):
@@ -137,7 +137,7 @@ def review_list_helper(request):
         "reviews": page_obj,
         "sort_by": sort_by,
     }
-    return render(request, "helpy/reviews/reviews_list.html", context)
+    return render(request, "reviews/reviews_list.html", context)
 
 
 def review_detail(request, pk):
@@ -145,7 +145,7 @@ def review_detail(request, pk):
     context = {
         "review": review,
     }
-    return render(request, "helpy/reviews/review_detail.html", context)
+    return render(request, "reviews/reviews_detail.html", context)
 
 
 @admin_only
@@ -156,7 +156,7 @@ def moderation_view(request):
     articles = Article.objects.filter(is_approved=False)
     events = Event.objects.filter(is_approved=False)
     return render(
-        request, "helpy/admin_only.html", {"articles": articles, "events": events}
+        request, "admin_only.html", {"articles": articles, "events": events}
     )
 
 
@@ -167,7 +167,7 @@ def review_list(request):
     page = request.GET.get("page")
     reviews = paginator.get_page(page)
     context = {"reviews": reviews, "order": order}
-    return render(request, "helpy/event_article/review.html", context=context)
+    return render(request, "art_event/review.html", context=context)
 
 
 def add_review(request):

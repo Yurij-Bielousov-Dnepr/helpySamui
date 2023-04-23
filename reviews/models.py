@@ -9,11 +9,11 @@ from offer.models import Helper
 # Re_view - для отзыва на помошника
 class Re_view(models.Model):
     RATING_CHOICES = (
-        (1, "1 звезда"),
-        (2, "2 звезды"),
-        (3, "3 звезды"),
-        (4, "4 звезды"),
-        (5, "5 звезд"),
+        (1, "1 star"),
+        (2, "2 stars"),
+        (3, "3 stars"),
+        (4, "4 stars"),
+        (5, "5 stars"),
     )
 
     LEVEL_CHOICES = [
@@ -57,13 +57,13 @@ class Re_view(models.Model):
 
 class Review(models.Model):
     RATING_CHOICES = (
-        (1, "1 звезда"),
-        (2, "2 звезды"),
-        (3, "3 звезды"),
-        (4, "4 звезды"),
-        (5, "5 звезд"),
+        (1, "1 star"),
+        (2, "2 stars"),
+        (3, "3 stars"),
+        (4, "4 stars"),
+        (5, "5 stars"),
     )
     helper = models.ForeignKey(Helper, on_delete=models.CASCADE)
-    customer_name = models.CharField(max_length=255)
+    # customer_name = models.CharField(max_length=255)
     rating = models.IntegerField(choices=RATING_CHOICES)
     comment = models.TextField()
