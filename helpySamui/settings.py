@@ -21,7 +21,7 @@ from helpy import my_menu, static
 
 SECRET_KEY = "django-insecure-!*_55!=_67w%7*s)(3=#2l)h0)+7!jw^y3v2dp^9^co1*sp%gx"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = os.path.join( BASE_DIR, "../staticfiles" )
+STATIC_ROOT = os.path.join( BASE_DIR, "staticfiles")
 STATIC_URL = "static/"
 # STATICFILES_DIRS = [
 #     os.path.join( BASE_DIR, "../static" ),
@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     # "allauth.socialaccount.providers.facebook",
     # "allauth.socialaccount.providers.twitter",
     # "allauth.socialaccount.providers.linkedin",
-]
+    ]
 TELEGRAM_BOT_TOKEN = "your_bot_token_here"
 TELEGRAM_BOT_WEBHOOK_URL = "https://yourdomain.com/telegram-bot/"
 # Указываем доступные языки для нашего проекта.
@@ -91,14 +91,14 @@ LANGUAGES = [
 ROOT_URLCONF = "helpySamui.urls"
 MEDIA_URL = "media/"
 SITE_URL = "http://127.0.0.1:8000/"
-MEDIA_ROOT = os.path.join( BASE_DIR, "../media" )
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOCALE_PATHS = [
-    os.path.join( BASE_DIR, "../locale" ),
+    os.path.join(BASE_DIR, "locale"),
 ]
 # Settings for django-bootstrap4
 # Определяем переменную BOOTSTRAP4_FOLDER
-BOOTSTRAP4_FOLDER = os.path.abspath( os.path.join( BASE_DIR, "../static", "bootstrap4" ) )
+BOOTSTRAP4_FOLDER = os.path.abspath( os.path.join( BASE_DIR, "static", "bootstrap4"))
 # Проверяем, есть ли BOOTSTRAP4_FOLDER в переменной sys.path
 if BOOTSTRAP4_FOLDER not in sys.path:
     # Если нет, то добавляем BOOTSTRAP4_FOLDER в начало списка sys.path
@@ -120,12 +120,12 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join( BASE_DIR, "../templates/helpy" ),
-            os.path.join( BASE_DIR, "../templates/accounts" ),
-            os.path.join( BASE_DIR, "../templates/reviews" ),
-            os.path.join( BASE_DIR, "../templates/art_event" ),
-            os.path.join( BASE_DIR, "../templates/offer" ),
-            os.path.join( BASE_DIR, "../templates/base_templates" ),
+            os.path.join(BASE_DIR, "templates/helpy"),
+            os.path.join(BASE_DIR, "templates/accounts"),
+            os.path.join(BASE_DIR, "templates/reviews"),
+            os.path.join(BASE_DIR, "templates/art_event"),
+            os.path.join(BASE_DIR, "templates/offer"),
+            os.path.join(BASE_DIR, "templates/base_templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -187,6 +187,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 LOGIN_REDIRECT_URL = "/"
 AUTHENTICATION_BACKENDS = [
+                               'allauth.account.auth_backends.AuthenticationBackend',]
+AUTHENTICATION_BACKENDS = [
     # ...
     "allauth.account.auth_backends.AuthenticationBackend",
     "allauth.account.auth_backends.AuthenticationBackend"
@@ -194,6 +196,7 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     # `allauth` specific authentication methods, such as login by e-mail
     "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
