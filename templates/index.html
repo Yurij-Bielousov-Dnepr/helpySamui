@@ -23,8 +23,8 @@
 <p>{% trans "The island is very small, but wandering blindly is not so interesting, and a sightseeing tour is expensive? We solve it on 1)-2) for VIPs, solution 3)" %}</p>
 <p>{% trans "Buying souvenirs is best not to remember, it's pain, unexpected and merciless..." %}</p>
 <div class="button-container">
-<a class="button" href="{% url 'helpmy' %}" title="{% trans 'Click if you need help' %}">{% trans "I need help" %}</a>
+<a class="button" href="{% url 'helpy:helpmy' %}" title="{% trans 'Click if you need help' %}">{% trans "I need help" %}</a>
 <span style="margin: 0 18px;"></span> <!-- space between buttons -->
-<a class="button" href="{% url 'helper_list' %}" title="{% trans 'Click to offer help' %}">{% trans "I want to offer help" %}</a>  </div>
+<a class="button" href="{% url 'helpy:helper_list' %}" title="{% trans 'Click to offer help' %}">{% trans "I want to offer help" %}</a>  </div>
 
 {% endblock %}

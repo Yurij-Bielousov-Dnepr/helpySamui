@@ -4,7 +4,7 @@
 {% block content %}
   {% if user.is_authenticated %}
    <h1>{% trans "Need help?" %}</h1>
-    <form method="get" action="{% url 'helpmy' %}">
+    <form method="get" action="{% url 'helpy:helpmy' %}">
       {% csrf_token %}
       <label for="{{ form.user_nick.id_for_label }}">{{ form.user_nick.label }}</label>
       {{ form.user_nick }}
@@ -70,6 +70,6 @@
     {% endif %}
   {% else %}
     <p>{% trans "Please log in to use this feature." %}</p>
-    <a href="{% url 'account_login' %}">{% trans "Go to login page" %}</a>
+    <a href="{% url 'accounts:account_login' %}">{% trans "Go to login page" %}</a>
   {% endif %}
 {% endblock %}

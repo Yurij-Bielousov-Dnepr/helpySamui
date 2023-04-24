@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>{% trans "Articles" %}</h1>
-<button type="button" onclick="location.href='{% url 'add_article' %}'">{% trans "Add Article" %}</button>
+<button type="button" onclick="location.href='{% url 'art_event:add_article' %}'">{% trans "Add Article" %}</button>
 
 <form method="get">
   {% csrf_token %}
@@ -31,12 +31,12 @@
     {% if article.tags.all %}
       <p>{% trans "Tags" %}:
         {% for tag in article.tags.all %}
-          <a href="{% url 'articles' %}?tags={{ tag }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+          <a href="{% url 'art_event:articles' %}?tags={{ tag }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </p>
     {% endif %}
   {% empty %}
-    <p>{% trans "No articles found." %} <a href="{% url 'articles' %}">{% trans "Go back" %}</a>.</p>
+    <p>{% trans "No articles found." %} <a href="{% url 'art_event:articles' %}">{% trans "Go back" %}</a>.</p>
   {% endfor %}
 </div>
 
