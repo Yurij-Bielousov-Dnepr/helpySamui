@@ -1,7 +1,7 @@
 # context_processors.py
 from django.shortcuts import render
 from django.urls import reverse
-from helpy.models import Sponsor
+from accounts.models import Sponsor
 import traceback
 
 
@@ -52,6 +52,6 @@ def my_view(request):
     ]
     if request.user.is_authenticated:
         menu_items.append( {'label': 'Favorites', 'url': reverse( 'favorites' )} )
-        return render(request, 'header.html', {'menu_items': menu_items, 'current_view_name': current_view_name})
+        return render( request, 'header.html', {'menu_items': menu_items, 'current_view_name': current_view_name} )
     else:
-        return render(request, 'header.html', {'menu_items': menu_items, 'current_view_name': current_view_name})
+        return render( request, 'header.html', {'menu_items': menu_items, 'current_view_name': current_view_name} )

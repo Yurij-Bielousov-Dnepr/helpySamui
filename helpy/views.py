@@ -190,6 +190,7 @@ def index(request):
     return render(request, "index.html")
 
 
+
 class HelperUpdateView(LoginRequiredMixin, UpdateView):
     model = Helper
     form_class = HelperUpdateForm

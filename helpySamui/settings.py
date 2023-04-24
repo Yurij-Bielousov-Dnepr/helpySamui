@@ -120,6 +120,7 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
             os.path.join(BASE_DIR, "templates/helpy"),
             os.path.join(BASE_DIR, "templates/accounts"),
             os.path.join(BASE_DIR, "templates/reviews"),
@@ -131,19 +132,21 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
-                "helpy.context_processors.footer_context",
                 "django.template.context_processors.request",
-                "helpy.context_processors.languages_flags.languages_with_flags",
-                "helpy.context_processors.menu_items",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                 #'helpy.context_processors.context_processor',
+                 #'helpy.context_processors.context_processor.footer_context',  # ваш предыдущий контекстный процессор
+                 #'helpy.context_processors.languages_with_flags',
+                 #"helpy.context_processors.languages_flags.",
+                 #"helpy.context_processors.menu_items",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.template.context_processors.csrf",
-                "allauth.account.context_processors.helpy",
-                "allauth.socialaccount.context_processors.socialaccount",
+                 #"allauth.account.context_processors.helpy",
+                 #"allauth.socialaccount.context_processors.socialaccount",
             ],
         },
     },
@@ -225,4 +228,3 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
 AUTH_USER_MODEL = 'accounts.MyUser'
-

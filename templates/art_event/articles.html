@@ -4,7 +4,7 @@
 
 {% block content %}
 <h1>{% trans "Articles" %}</h1>
-<button type="submit"><a href="{% url 'add_article' %}">{% trans "Add Article" %}</a></button>
+<button type="button" onclick="location.href='{% url 'add_article' %}'">{% trans "Add Article" %}</button>
 
 <form method="get">
   {% csrf_token %}

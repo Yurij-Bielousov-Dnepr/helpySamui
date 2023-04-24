@@ -19,6 +19,8 @@ class LoginView(generic.FormView):
     template_name = "accounts/login.html"
     success_url = reverse_lazy("index")
 
+class VIPView(TemplateView):
+    template_name = 'VIP.html'
 
 @login_required
 def edit_visitor_profile(request):
