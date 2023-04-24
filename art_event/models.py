@@ -43,16 +43,6 @@ class Article(models.Model):
     is_approved = models.BooleanField(default=False)
     is_favorite = models.BooleanField(default=False)
 
-
-class Favorites(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
-    article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, null=True, blank=True
-    )
-    is_favorite = models.BooleanField(default=False)
-
-
 class Review(models.Model):
     RATING_CHOICES = (
         (1, "1 star"),

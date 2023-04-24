@@ -4,7 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from art_event.models import Favorites, Event, Article
+from art_event.models import Event, Article
 from helpy.models import Region, Language
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -74,9 +74,17 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return self.is_superuser
 
-
-
 User = get_user_model()
+
+
+class Favorites(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
+    article = models.ForeignKey(
+        Article, on_delete=models.CASCADE, null=True, blank=True
+    )
+    is_favorite = models.BooleanField(default=False)
+
 
 class Stats(models.Model):
     date = models.DateField(auto_now_add=True)
