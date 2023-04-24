@@ -60,4 +60,4 @@ def telegram_bot(request):
         # Отправьте сообщение пользователю
         bot.send_message(chat_id=chat_id, text=message_text)
 
-    return render(request, "helpy/telegram_bot.html")
+    return render(request, "telegram_bot.html")

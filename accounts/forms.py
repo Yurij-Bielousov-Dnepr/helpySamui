@@ -48,12 +48,11 @@ class VisitorForm(forms.ModelForm):
             "is_sponsor",
             "phone_number",
             "email",
-            "favorites",
-        ]
+            ]
         widgets = {
             "district": forms.CheckboxSelectMultiple(),
             "languages": forms.CheckboxSelectMultiple(),
-            "favorites": forms.SelectMultiple(),
+            # "favorites": forms.SelectMultiple(),
         }
 
     def __init__(self, *args, **kwargs):

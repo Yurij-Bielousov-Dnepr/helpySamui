@@ -1,4 +1,6 @@
-from .models import Helper, HelpRequest, User, Stats
+from accounts.models import MyUser, Stats
+from helpy.models import HelpRequest
+from offer.models import Helper
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in, user_logged_out
@@ -26,7 +28,7 @@ def update_help_requests_count(sender, **kwargs):
 @receiver(user_logged_in)
 @receiver(user_logged_out)
 def update_online_users_count(sender, request, user, **kwargs):
-    online_users_count = User.objects.filter(is_authenticated=True).count()
+    online_users_count = MyUser.objects.filter(is_authenticated=True).count()
     stats, _ = Stats.objects.get_or_create(date=date.today())
     stats.online_users = online_users_count
     stats.save()

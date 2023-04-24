@@ -14,7 +14,7 @@ from accounts.models import (
     Favorites,
 )
 
-# admin.site.register(Tag)
+admin.site.register(Favorites)
 admin.site.register(MyUser)
 admin.site.register(Article)
 admin.site.register(Event)
@@ -24,7 +24,6 @@ admin.site.register(Tag_help)
 admin.site.register(Sponsor)
 admin.site.register(Re_view)
 admin.site.register(Stats)
-
 
 
 @admin.register(Language, SupportLevel, HelpRequest, Region, HelpRequestLanguage, Level)

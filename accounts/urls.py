@@ -13,7 +13,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from . import views
 
 
-app_name = "helpy"  # добавьте это, если используете пространства имен
+app_name = "accounts"  # добавьте это, если используете пространства имен
 
 
 urlpatterns = [
