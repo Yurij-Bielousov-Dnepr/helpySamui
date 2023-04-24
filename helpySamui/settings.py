@@ -39,7 +39,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "offer", "static", "offer"),
     os.path.join(BASE_DIR, "accounts", "static", "accounts"),
 ]
-WSGI_APPLICATION = "helpy.wsgi.application"
+WSGI_APPLICATION = "helpySamui.wsgi.application"
 
 # получаем путь к виртуальной среде VIRTUAL_ENV = os.environ.get('VIRTUAL_ENV') BASE_DIR / "static",
 VIRTUAL_ENV = os.getenv("VIRTUAL_ENV")
@@ -152,7 +152,7 @@ TEMPLATES = [
 USE_I18N = True
 # Задаем язык по умолчанию.
 LANGUAGE_CODE = "en-us"
-
+DEBUG = True
 MIDDLEWARE = [
     # ...
     "django.middleware.locale.LocaleMiddleware",

@@ -1,5 +1,5 @@
 # views.py
-# from datetime import date
+from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,7 +10,6 @@ from django.shortcuts import render, redirect
 from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import DeleteView
-
 # from .forms import HelperForm
 from django.views.generic import ListView, UpdateView
 from django.views.generic.edit import CreateView
@@ -184,7 +183,7 @@ def add_helper(request):
             return redirect("helper_detail", pk=helper.pk)
     else:
         form = HelpForm()
-    return render(request, "helpy/add_helper.html", {"form": form})
+    return render(request, "helpy/helpmy.html", {"form": form})
 
 
 def index(request):
