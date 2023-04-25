@@ -69,7 +69,16 @@
       <p>{% trans "Unfortunately, no available helpers were found with the selected parameters. Try expanding the district or reducing the number of required tags." %}</p>
     {% endif %}
   {% else %}
-    <p>{% trans "Please log in to use this feature." %}</p>
-    <a href="{% url 'accounts:account_login' %}">{% trans "Go to login page" %}</a>
+  <div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="alert alert-warning" role="alert">
+        <p>{% trans "Please log in to use this feature." %}</p>
+        <a href="{% url 'accounts:account_login' %}" class="btn btn-primary">{% trans "Go to login page" %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
   {% endif %}
 {% endblock %}

@@ -1,7 +1,6 @@
 # settings.py from django_telegram_bot import models
 import os
 import sys
-
 import django
 from allauth import socialaccount
 from django.conf import settings

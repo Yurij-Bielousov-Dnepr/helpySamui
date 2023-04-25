@@ -14,20 +14,20 @@
     <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
-      <a href="{% url 'add_helper' %}">
+      <a href="{% url 'offer:add_helper' %}">
         <button type="button">{% trans "Add Helper" %}</button>
       </a>
       <br>
       {% if user.helper %}
         <p>{% trans "If you are already in our Database, we suggest updating your information." %}</p>
-        <a href="{% url 'update_helper_info' user.helper.pk %}">
+        <a href="{% url 'offer:update_helper_info' user.helper.pk %}">
           <button>{% trans "Edit My Data" %}</button>
         </a>
       {% endif %}
       <br>
       {% if user.helper %}
         <p>{% trans "If you want to remove your data from our Database, please click the button below." %}</p>
-        <a href="{% url 'delete_helper' user.helper.pk %}">
+        <a href="{% url 'offer:delete_helper' user.helper.pk %}">
           <button>{% trans "Delete My Data" %}</button>
         </a>
       {% endif %}
@@ -35,9 +35,9 @@
   {% else %}
     <p>
       {% trans "Please" %}
-      <a href="{% url 'account_register' %}" class="btn btn-primary">{% trans "register" %}</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-primary">{% trans "register" %}</a>
       {% trans "or" %}
-      <a href="{% url 'account_login' %}" class="btn btn-secondary">{% trans "login" %}</a>
+      <a href="{% url 'accounts:account_login' %}" class="btn btn-secondary">{% trans "login" %}</a>
       {% trans "to add yourself to our list of helpers." %}
     </p>
   {% endif %}
