@@ -18,9 +18,10 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from helpy import my_menu, static
 
+
 SECRET_KEY = "django-insecure-!*_55!=_67w%7*s)(3=#2l)h0)+7!jw^y3v2dp^9^co1*sp%gx"
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = os.path.join( BASE_DIR, "staticfiles")
+BASE_DIR = os.path.dirname( os.path.dirname( os.path.abspath( __file__ ) ) )
+STATIC_ROOT = os.path.join( BASE_DIR, "staticfiles" )
 STATIC_URL = "static/"
 # STATICFILES_DIRS = [
 #     os.path.join( BASE_DIR, "../static" ),
@@ -31,21 +32,21 @@ STATIC_URL = "static/"
 #     os.path.join( BASE_DIR, "../accounts", "static", "accounts" ),
 # ]
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "helpy", "static", "helpy"),
-    os.path.join(BASE_DIR, "art_event", "static", "art_event"),
-    os.path.join(BASE_DIR, "reviews", "static", "reviews"),
-    os.path.join(BASE_DIR, "offer", "static", "offer"),
-    os.path.join(BASE_DIR, "accounts", "static", "accounts"),
+    os.path.join( BASE_DIR, "static" ),
+    os.path.join( BASE_DIR, "helpy", "static", "helpy" ),
+    os.path.join( BASE_DIR, "art_event", "static", "art_event" ),
+    os.path.join( BASE_DIR, "reviews", "static", "reviews" ),
+    os.path.join( BASE_DIR, "offer", "static", "offer" ),
+    os.path.join( BASE_DIR, "accounts", "static", "accounts" ),
 ]
 WSGI_APPLICATION = "helpySamui.wsgi.application"
 
 # получаем путь к виртуальной среде VIRTUAL_ENV = os.environ.get('VIRTUAL_ENV') BASE_DIR / "static",
-VIRTUAL_ENV = os.getenv("VIRTUAL_ENV")
+VIRTUAL_ENV = os.getenv( "VIRTUAL_ENV" )
 if VIRTUAL_ENV:
-    VENV_PATH = os.path.join(VIRTUAL_ENV, "Lib", "site-packages")
-    if os.path.exists(VENV_PATH):
-        sys.path.insert(0, VENV_PATH)
+    VENV_PATH = os.path.join( VIRTUAL_ENV, "Lib", "site-packages" )
+    if os.path.exists( VENV_PATH ):
+        sys.path.insert( 0, VENV_PATH )
 INSTALLED_APPS = [
     "django.template",
     "django.contrib.admin",
@@ -74,7 +75,7 @@ INSTALLED_APPS = [
     # "allauth.socialaccount.providers.facebook",
     # "allauth.socialaccount.providers.twitter",
     # "allauth.socialaccount.providers.linkedin",
-    ]
+]
 TELEGRAM_BOT_TOKEN = "your_bot_token_here"
 TELEGRAM_BOT_WEBHOOK_URL = "https://yourdomain.com/telegram-bot/"
 # Указываем доступные языки для нашего проекта.
@@ -93,15 +94,15 @@ SITE_URL = "http://127.0.0.1:8000/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, "locale"),
+    os.path.join( BASE_DIR, "locale" ),
 ]
 # Settings for django-bootstrap4
 # Определяем переменную BOOTSTRAP4_FOLDER
-BOOTSTRAP4_FOLDER = os.path.abspath( os.path.join( BASE_DIR, "static", "bootstrap4"))
+BOOTSTRAP4_FOLDER = os.path.abspath( os.path.join( BASE_DIR, "static", "bootstrap4" ) )
 # Проверяем, есть ли BOOTSTRAP4_FOLDER в переменной sys.path
 if BOOTSTRAP4_FOLDER not in sys.path:
     # Если нет, то добавляем BOOTSTRAP4_FOLDER в начало списка sys.path
-    sys.path.insert(0, BOOTSTRAP4_FOLDER)
+    sys.path.insert( 0, BOOTSTRAP4_FOLDER )
 BOOTSTRAP4 = {
     "error_css_class": "bootstrap4-error",
     "required_css_class": "bootstrap4-required",
@@ -119,13 +120,13 @@ TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
-            os.path.join(BASE_DIR, "templates"),
-            os.path.join(BASE_DIR, "templates/helpy"),
-            os.path.join(BASE_DIR, "templates/accounts"),
-            os.path.join(BASE_DIR, "templates/reviews"),
-            os.path.join(BASE_DIR, "templates/art_event"),
-            os.path.join(BASE_DIR, "templates/offer"),
-            os.path.join(BASE_DIR, "templates/base_templates"),
+            os.path.join( BASE_DIR, "templates"),
+            os.path.join( BASE_DIR, "templates/helpy"),
+            os.path.join( BASE_DIR, "templates/accounts"),
+            os.path.join( BASE_DIR, "templates/reviews"),
+            os.path.join( BASE_DIR, "templates/art_event"),
+            os.path.join( BASE_DIR, "templates/offer"),
+            os.path.join( BASE_DIR, "templates/base_templates"),
         ],
         "APP_DIRS": True,
         "OPTIONS": {
@@ -134,18 +135,18 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                 #'helpy.context_processors.context_processor',
-                 #'helpy.context_processors.context_processor.footer_context',  # ваш предыдущий контекстный процессор
-                 #'helpy.context_processors.languages_with_flags',
-                 #"helpy.context_processors.languages_flags.",
-                 #"helpy.context_processors.menu_items",
+                # 'helpy.context_processors.context_processor',
+                # 'helpy.context_processors.context_processor.footer_context',  # ваш предыдущий контекстный процессор
+                # 'helpy.context_processors.languages_with_flags',
+                # "helpy.context_processors.languages_flags.",
+                # "helpy.context_processors.menu_items",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.template.context_processors.csrf",
-                 #"allauth.account.context_processors.helpy",
-                 #"allauth.socialaccount.context_processors.socialaccount",
+                # "allauth.account.context_processors.helpy",
+                # "allauth.socialaccount.context_processors.socialaccount",
             ],
         },
     },
@@ -189,16 +190,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 LOGIN_REDIRECT_URL = "/"
 AUTHENTICATION_BACKENDS = [
-                               'allauth.account.auth_backends.AuthenticationBackend',]
-AUTHENTICATION_BACKENDS = [
-    # ...
-    "allauth.account.auth_backends.AuthenticationBackend",
-    "allauth.account.auth_backends.AuthenticationBackend"
-    # ... 'allauth.socialaccount.auth_backends.AuthenticationBackend',
-    "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'django.contrib.auth.backends.RemoteUserBackend',
     'django.contrib.auth.backends.ModelBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
+    # "allauth.account.auth_backends.AuthenticationBackend"
+    # ... 'allauth.socialaccount.auth_backends.AuthenticationBackend',
+    # "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by e-mail
+    # 'django.contrib.auth.backends.ModelBackend',
 ]
 
 SOCIALACCOUNT_PROVIDERS = {

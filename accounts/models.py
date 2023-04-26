@@ -176,15 +176,6 @@ class SupportLevel(models.Model):
         return f"Level {self.level}"
 
 
-class Favorites(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
-    article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, null=True, blank=True
-    )
-    is_favorite = models.BooleanField(default=False)
-
-
 class Level(models.Model):
     LEVEL_CHOICES = [
         (1, "Level 1"),
