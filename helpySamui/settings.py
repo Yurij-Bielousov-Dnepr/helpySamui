@@ -11,7 +11,7 @@ import allauth.socialaccount
 # from allauth.socialaccount.providers.facebook import views as facebook_views
 # from allauth.socialaccount.providers import linkedin
 # from allauth.account.auth_backends import AuthenticationBackend
-from django.contrib import staticfiles
+from django.contrib import staticfiles, auth
 from django.conf import settings
 from django.core.checks import templates
 from django.http import HttpResponse
@@ -91,6 +91,7 @@ LANGUAGES = [
 ROOT_URLCONF = "helpySamui.urls"
 MEDIA_URL = "media/"
 SITE_URL = "http://127.0.0.1:8000/"
+SITE_ID = 1
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOCALE_PATHS = [
