@@ -59,10 +59,6 @@ class CustomPasswordChangeView(PasswordChangeView):
 class AuthLoginView(LoginView):
     template_name = 'accounts/login.html'
 
-class SignupView(CreateView):
-    form_class = forms.UserCreationForm  # замените на вашу форму регистрации
-    template_name = 'accounts/signup.html'
-    success_url = 'accounts:verification_sent'  # замените на ваш URL
 
 class PasswordSetView(PasswordChangeView):
     template_name = 'accounts/password_set.html'
@@ -87,11 +83,6 @@ class EmailConfirmView(TemplateView):
 
 class EmailView(TemplateView):
     template_name = 'accounts/email.html'
-
-class LoginView(generic.FormView):
-    form_class = CustomAuthenticationForm
-    template_name = "accounts/login.html"
-    success_url = reverse_lazy("index")
 
 class VIPView(TemplateView):
     template_name = 'VIP.html'
@@ -153,46 +144,51 @@ def account_email(request):
 def success(request):
     return render(request, "offer/success.html")
 
-
-class LoginView(auth_views.LoginView):
+class LoginView(generic.FormView):
+    form_class = CustomAuthenticationForm
     template_name = "accounts/login.html"
-
+    success_url = reverse_lazy("index")
 
 class LogoutView(auth_views.LogoutView):
     template_name = "accounts/login.html"
     next_page = reverse_lazy("login")
 
+class SignupView(CreateView):
+    form_class = forms.UserCreationForm  # замените на вашу форму регистрации
+    template_name = 'accounts/signup.html'
+    success_url = 'accounts:verification_sent'  # замените на ваш URL
+# запасная вьюха навырост
+# class SignupView(FormView):
+#     form_class = UserCreationForm
+#     template_name = "accounts/signup.html"
+#     success_url = reverse_lazy("index")  # здесь нужно указать URL главной страницы
+#
+#     def form_valid(self, form):
+#         response = super().form_valid(form)
+#         user = form.save()
+#         auth_login(self.request, user)  # авторизуем пользователя
+#         return response
+#
+#     def get(self, request):
+#         form = self.form_class()
+#         return render(request, self.template_name, {"form": form})
+#
+#     def post(self, request):
+#         form = self.form_class(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             username = form.cleaned_data.get("username")
+#             password = form.cleaned_data.get("password1")
+#             user = authenticate(username=username, password=password)
+#             auth_login(request, user)  # авторизуем пользователя
+#             return redirect("home")
+#         else:
+#             messages.error(request, "Invalid form submission.")
+#             return render(request, self.template_name, {"form": form})
+#
+#
+# login_view = LoginView.as_view()
+# logout_view = LogoutView.as_view()
+# signup_view = SignupView.as_view()
 
-class SignupView(FormView):
-    form_class = UserCreationForm
-    template_name = "accounts/signup.html"
-    success_url = reverse_lazy("index")  # здесь нужно указать URL главной страницы
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.save()
-        auth_login(self.request, user)  # авторизуем пользователя
-        return response
-
-    def get(self, request):
-        form = self.form_class()
-        return render(request, self.template_name, {"form": form})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=password)
-            auth_login(request, user)  # авторизуем пользователя
-            return redirect("home")
-        else:
-            messages.error(request, "Invalid form submission.")
-            return render(request, self.template_name, {"form": form})
-
-
-login_view = LoginView.as_view()
-logout_view = LogoutView.as_view()
-signup_view = SignupView.as_view()
 

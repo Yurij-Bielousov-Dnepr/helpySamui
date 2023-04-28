@@ -16,8 +16,8 @@
     {% bootstrap_form form %}
     <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
     <hr>
-    <p>{% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a></p>
-    <p>{% trans "Forgot your password?" %} <a href="{% url 'account_reset_password' %}">{% trans "Reset it" %}</a></p>
+    <p>{% trans "Don't have an account?" %} <a href="{% url 'accounts:signup' %}">{% trans "Sign up" %}</a></p>
+    <p>{% trans "Forgot your password?" %} <a href="{% url 'accounts:reset_password' %}">{% trans "Reset it" %}</a></p>
     {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
     {% endif %}

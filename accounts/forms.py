@@ -40,7 +40,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = MyUser
-        fields = ("username", "email", "password1", "password2")
+        fields = ("userNick", "email", "password1", "password2")
 
     def save(self, commit=True):
         user = super(CustomUserCreationForm, self).save(commit=False)
@@ -85,7 +85,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 
     class Meta:
         model = MyUser
-        fields = ["username", "password"]
+        fields = ["email", "password"]
 
 
 class VisitorForm(forms.ModelForm):

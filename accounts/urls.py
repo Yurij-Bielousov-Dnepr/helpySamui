@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
@@ -17,7 +17,6 @@ from .views import VIPView
 
 app_name = "accounts"  # добавьте это, если используете пространства имен
 
-
 urlpatterns = [
     path('signup_closed/', TemplateView.as_view(template_name='signup_closed.html'), name='signup_closed'),
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
@@ -32,10 +31,9 @@ urlpatterns = [
          PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
     path('password-reset/complete/', PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
          name='password_reset_complete'),
-    path("account_inactive/", views.account_inactive, name="account_inactive"),
-    path("email/", views.email, name="email"),
-    path("email_confirm/", views.email_confirm, name="email_confirm"),
-    # path("login/", views.login, name=""),
+    path( "account_inactive/", views.AccountInactiveView.as_view(), name="account_inactive" ),
+    path( "email/", views.EmailView.as_view(), name="email" ),
+    path( "email_confirm/", views.EmailConfirmView.as_view(), name="email_confirm" ),
     path( 'sign_in/', views.SignInView.as_view(), name='sign_in' ),
     path( 'signup/', views.SignupView.as_view(), name='signup' ),
     path( 'password_set/', views.PasswordSetView.as_view(), name='password_set' ),
@@ -45,9 +43,6 @@ urlpatterns = [
     path( 'password_change/', views.PasswordChangeView.as_view(), name='password_change' ),
     path( 'vip/', VIPView.as_view(), name='vip' ),
 ]
-    #    path( 'set_webhook/', set_webhook ),
-    #    path('webhook/', webhook, name='webhook'),
-    #    path('telegram_bot/', telegram_bot, name='telegram_bot'),
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
