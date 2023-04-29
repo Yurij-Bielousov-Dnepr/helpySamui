@@ -227,6 +227,11 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_ADAPTER = "accounts.adapters.CustomSocialAccountAdapter"
 AUTH_USER_MODEL = 'accounts.MyUser'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',

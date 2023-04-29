@@ -8,8 +8,8 @@
   <h1>{% trans "Sign in" %}</h1>
   <form method="post">
     {% csrf_token %}
-    <label for="username">{% trans "Enter username" %}</label><br>
-    <input type="text" id="username" name="username"><br>
+      <label for="email">{% trans "Enter email" %}</label><br>
+    <input type="email" id="email" name="email"><br>
     <label for="password">{% trans "Enter password" %}</label><br>
     <input type="password" id="password" name="password"><br>
     <br>

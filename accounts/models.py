@@ -52,7 +52,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'userNick'
     REQUIRED_FIELDS = ['email']
-
     objects = UserManager()
 
     def __str__(self):
@@ -74,7 +73,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return self.is_superuser
 
-User = get_user_model()
+
 
 
 class Favorites(models.Model):

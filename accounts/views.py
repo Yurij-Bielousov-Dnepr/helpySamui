@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
@@ -21,17 +20,27 @@ from django.contrib.auth.views import (
 from .forms import CustomAuthenticationForm  # Импортируйте вашу кастомную форму аутентификации, если она используется
 from django.views import View
 from django.utils.decorators import method_decorator
+from django.contrib.auth import login
 
 
-class AccountInactiveView(View):
-    def get(self, request):
-        return render(request, 'account_inactive.html')
 
+
+class EmailConfirmView(TemplateView):
+    template_name = 'accounts/email_confirm.html'
+
+
+class VIPView(TemplateView):
+    template_name = 'VIP.html'
+class AccountInactiveView(TemplateView):
+    template_name = 'accounts/account_inactive.html'
 class EmailView(View):
     @method_decorator(login_required)
     def get(self, request):
         form = EmailForm()
         return render(request, 'email.html', {'form': form})
+
+    class EmailView( TemplateView ):
+        template_name = 'accounts/email.html'
 
     @method_decorator(login_required)
     def post(self, request):
@@ -43,13 +52,13 @@ class EmailView(View):
             messages.error(request, 'Пожалуйста, проверьте свой адрес электронной почты и попробуйте снова.')
             return render(request, 'email.html', {'form': form})
 
-class EmailConfirmView(View):
-    def get(self, request):
-        return render(request, 'email_confirm.html')
-
 class SignInView(LoginView):
     template_name = 'accounts/sign_in.html'  # Укажите путь к вашему шаблону аутентификации
     form_class = CustomAuthenticationForm  # Укажите вашу кастомную форму аутентификации, если она используется
+
+    def sign_in_user(self, request, user_object):
+        login( request, user_object )
+
 
 
 class CustomPasswordChangeView(PasswordChangeView):
@@ -57,7 +66,7 @@ class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'change_password.html'
     success_url = '/password_change_done/'
 class AuthLoginView(LoginView):
-    template_name = 'accounts/login.html'
+    template_name = 'accounts/sign_in.html'
 
 
 class PasswordSetView(PasswordChangeView):
@@ -75,21 +84,10 @@ class PasswordChangeView(PasswordChangeView):
     template_name = 'accounts/password_change.html'
     success_url = 'accounts:password_change_done'  # замените на ваш URL
 
-class AccountInactiveView(TemplateView):
-    template_name = 'accounts/account_inactive.html'
-
-class EmailConfirmView(TemplateView):
-    template_name = 'accounts/email_confirm.html'
-
-class EmailView(TemplateView):
-    template_name = 'accounts/email.html'
-
-class VIPView(TemplateView):
-    template_name = 'VIP.html'
 
 @login_required
 def edit_visitor_profile(request):
-    visitor = request.user.User
+    visitor = request.MyUser
     if request.method == "POST":
         form = EditVisitorProfileForm(request.POST, instance=visitor)
         if form.is_valid():
@@ -102,7 +100,7 @@ def edit_visitor_profile(request):
 
 @login_required
 def account_email(request):
-    visitor = request.user
+    visitor = request.MyUser
     visitor_form = AddEmailForm(request.POST or None)
     remove_form = RemoveEmailForm(request.POST or None)
 
@@ -146,17 +144,24 @@ def success(request):
 
 class LoginView(generic.FormView):
     form_class = CustomAuthenticationForm
-    template_name = "accounts/login.html"
+    template_name = "accounts/sign_in.html"
     success_url = reverse_lazy("index")
 
 class LogoutView(auth_views.LogoutView):
-    template_name = "accounts/login.html"
-    next_page = reverse_lazy("login")
+    template_name = "accounts/sign_in.html"
+    next_page = reverse_lazy("sign_in")
 
 class SignupView(CreateView):
-    form_class = forms.UserCreationForm  # замените на вашу форму регистрации
+    form_class = forms.CustomUserCreationForm  # замените на вашу форму регистрации
     template_name = 'accounts/signup.html'
-    success_url = 'accounts:verification_sent'  # замените на ваш URL
+    success_url = reverse_lazy( 'accounts:verification_sent' )
+
+    def form_valid(self, form):
+        response = super().form_valid( form )
+        sign_in_view = SignInView()
+        sign_in_view.sign_in_user( self.request, self.object )  # Замените login на ваш метод sign_in_user
+        return response
+
 # запасная вьюха навырост
 # class SignupView(FormView):
 #     form_class = UserCreationForm

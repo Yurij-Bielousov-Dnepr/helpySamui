@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView
 from django.contrib import admin
 from django.contrib.auth.views import (
-    LoginView, LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+     LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 )
 from django.views.generic import TemplateView
 # from telegram_bot.telegram_bot import set_webhook, webhook
@@ -13,7 +13,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.admin.views.decorators import staff_member_required
 from . import views
-from .views import VIPView
+from .views import (
+    AccountInactiveView,
+    EmailView,
+    EmailConfirmView,
+    SignInView,
+    SignupView,
+    PasswordSetView,
+    PasswordResetFromKeyView,
+    PasswordResetFromKeyDoneView,
+    PasswordChangeView,
+    VIPView,
+)
+
 
 app_name = "accounts"  # добавьте это, если используете пространства имен
 

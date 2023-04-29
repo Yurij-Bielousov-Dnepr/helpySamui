@@ -32,6 +32,7 @@ def my_view(request):
 class HelpMyView(LoginRequiredMixin, View):
     template_name = "helpy/helpmy.html"
     form_class = HelpRequestForm
+    login_url = reverse_lazy( 'accounts:sign_in' )
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial={"userNick": request.user.username})
