@@ -9,7 +9,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         # Создаем модель Visitor на основе данных социальной сети
         visitor, created = MyUser.objects.get_or_create(
-            userNick=data.get("username", ""),
+            userNick=data.get("userNick", ""),
             category="Customer",  # По умолчанию
             is_sponsor=False,  # По умолчанию
             phone_number=data.get("phone", ""),
