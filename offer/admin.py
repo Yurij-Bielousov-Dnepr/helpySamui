@@ -1,3 +1,8 @@
 from django.contrib import admin
+from offer.models import Helper
 
-# Register your models here.
+admin.site.register(Helper)
+
+@admin.register(Helper)
+class HelperAdmin(admin.ModelAdmin):
+    pass
