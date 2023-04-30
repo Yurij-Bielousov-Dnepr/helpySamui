@@ -179,9 +179,9 @@ class HelpRequestForm(forms.ModelForm):
         }
 
 
-# forms.py
 class HelperCreateForm(forms.ModelForm):
     user_type = forms.CharField(widget=forms.HiddenInput(), initial="helper")
+    soft_skills = forms.CharField(required=False, label="Soft skills", widget=forms.Textarea)
 
     class Meta:
         model = Helper
@@ -197,39 +197,28 @@ class HelperCreateForm(forms.ModelForm):
             "phone",
         )
         labels = {
-            "user_offer_is_free": "Free offer",
-            "name": "Name",
-            "tags": "Tags",
-            "support_levels": "Support levels",
-            "regions": "Regions",
-            "contacts": "Contacts",
-            "languages": "Languages",
-            "email": "Email",
-            "phone": "Phone",
+            "user_offer_is_free": _("Free offer"),
+            "name": _("Name"),
+            "tags": _("Tags"),
+            "support_levels": _("Support levels"),
+            "regions": _("Regions"),
+            "contacts": _("Contacts"),
+            "languages": _("Languages"),
+            "email": _("Email"),
+            "phone": _("Phone"),
         }
         widgets = {
-            "tags": forms.CheckboxSelectMultiple,
-            "support_levels": forms.CheckboxSelectMultiple,
-            "regions": forms.CheckboxSelectMultiple,
-            "language": forms.CheckboxSelectMultiple(
-                attrs={"class": "inline-checkbox"}
-            ),
+            "tags": forms.CheckboxSelectMultiple(),
+            "support_levels": forms.CheckboxSelectMultiple(),
+            "regions": forms.CheckboxSelectMultiple(),
+            "languages": forms.CheckboxSelectMultiple(attrs={"class": "inline-checkbox"}),
         }
-        # Add the following line to define the soft_skills field
-        soft_skills = forms.CharField(
-            required=False, label="Soft skills", widget=forms.Textarea
-        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if "language" in self.fields:
-            language_choices = dict(Language.LANGUAGE_CHOICES)
-            self.fields["language"].widget = forms.CheckboxSelectMultiple(
-                attrs={"class": "inline-checkbox"}
-            )
-            self.fields["language"].choices = [
-                (code, language_choices[code]) for code in language_choices
-            ]
+        if "languages" in self.fields:
+            language_choices = Language.LANGUAGE_CHOICES
+            self.fields["languages"].choices = language_choices
 
 
 class HelperUpdateForm(forms.ModelForm):

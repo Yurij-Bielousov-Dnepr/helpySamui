@@ -6,7 +6,7 @@
 {% endcomment %}
 {% block content %}
   <h1>{% trans 'Adding helper' %}</h1>
-<p> %} <a href="{% url 'vip' %}">{% trans 'Click here to get VIP status and enjoy additional privileges.'%} </a> </p>
+<p> %} <a href="{% url 'accounts:vip' %}">{% trans 'Click here to get VIP status and enjoy additional privileges.'%} </a> </p>
     <form method="post">
     {% csrf_token %}
     {% for field in form %}

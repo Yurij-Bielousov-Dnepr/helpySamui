@@ -6,21 +6,35 @@ from django.contrib.auth.models import User
 
 
 class Tag_article(models.Model):
-    name = [
-        ("moto_rent", _("Moto Rent")),
-        ("moto_beginner", _("Moto Beginner")),
-        ("moto_sos", _("Moto SOS")),
-        ("rent_estate", _("Rent Estate")),
-        ("public_serv", _("Public Service")),
-        ("lang_schol", _("Language School")),
-        ("med_help", _("Medical Help")),
-        ("serv_transl", _("Translation Services")),
-        ("shopping_destination", _("Shopping Destination")),
-        ("souvenirs", _("Souvenirs")),
-    ]
+    MOTO_RENT = 'moto_rent'
+    MOTO_BEGINNER = 'moto_beginner'
+    MOTO_SOS = 'moto_sos'
+    RENT_ESTATE = 'rent_estate'
+    PUBLIC_SERV = 'public_serv'
+    LANG_SCHOL = 'lang_schol'
+    MED_HELP = 'med_help'
+    SERV_TRANSL = 'serv_transl'
+    SHOPPING_DESTINATION = 'shopping_destination'
+    SOUVENIRS = 'souvenirs'
+
+    NAME_CHOICES = (
+        (MOTO_RENT, _("Moto Rent")),
+        (MOTO_BEGINNER, _("Moto Beginner")),
+        (MOTO_SOS, _("Moto SOS")),
+        (RENT_ESTATE, _("Rent Estate")),
+        (PUBLIC_SERV, _("Public Service")),
+        (LANG_SCHOL, _("Language School")),
+        (MED_HELP, _("Medical Help")),
+        (SERV_TRANSL, _("Translation Services")),
+        (SHOPPING_DESTINATION, _("Shopping Destination")),
+        (SOUVENIRS, _("Souvenirs")),
+    )
+
+    name = models.CharField(max_length=20, choices=NAME_CHOICES)
 
     def __str__(self):
-        return self.name
+        return self.get_name_display()
+
     class Meta:
         app_label = 'art_event'
 
