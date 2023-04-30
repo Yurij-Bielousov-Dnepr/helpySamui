@@ -1,1 +1,1 @@
-web: gunicorn helpy.wsgi
+web: gunicorn helpySamui.wsgi
