@@ -76,7 +76,7 @@ def helper_form(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Helper added successfully!")
-            return redirect("success")
+            return redirect("offer:success")
     else:
         form = HelperCreateForm()
     return render(request, "helper_form.html", {"form": form})
