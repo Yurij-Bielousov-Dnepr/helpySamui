@@ -101,34 +101,6 @@ class HelpForm(forms.ModelForm):
             ]
 
 
-class HelpRequestForm(forms.ModelForm):
-    languages = forms.ModelMultipleChoiceField(
-        queryset=Language.objects.all(), widget=forms.CheckboxSelectMultiple
-    )
-
-    class Meta:
-        model = HelpRequest
-        fields = [
-            "user_nick",
-            "category",
-            "problem_description",
-            "district",
-            "level",
-            "contacts",
-            "languages",
-        ]
-        labels = {
-            "user_nick": _("User Nickname"),
-            "category": _("Category"),
-            "problem_description": _("Describe the problem"),
-            "district": _("District"),
-            "level": _("Level"),
-            "contacts": _("Contacts"),
-            # 'tags': _('Tags (up to 3)'),
-        }
-
-
-# forms.py
 class HelperCreateForm(forms.ModelForm):
     user_type = forms.CharField(widget=forms.HiddenInput(), initial="helper")
 
@@ -214,3 +186,83 @@ class HelperUpdateForm(forms.ModelForm):
             "regions": forms.CheckboxSelectMultiple,
             "languages": forms.CheckboxSelectMultiple,
         }
+from .models import UserRequest, Level
+
+class UserRequestForm(forms.ModelForm):
+    class Meta:
+        model = UserRequest
+        fields = [
+            "selected_service",
+            "comment",
+            "district",
+            "level_of_help",
+            "languages",
+            "contacts",
+        ]
+        widgets = {
+            "comment": forms.Textarea(attrs={"rows": 5}),
+            "contacts": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
+        }
+
+    selected_service = forms.ChoiceField(
+        choices=UserRequest.name_choices, widget=forms.RadioSelect()
+    )
+    level_of_help = forms.ChoiceField(choices=Level.LEVEL_CHOICES, initial="1")
+    rating = forms.ChoiceField(choices=UserRequest.RATING_CHOICES, initial="1")
+    languages = forms.ModelMultipleChoiceField(
+        queryset=Language.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+    )
+    contacts = forms.CharField(max_length=50)
+class HelpRequestForm(forms.ModelForm):
+    class Meta:
+        model = HelpRequest
+        fields = [
+            "category",
+            "problem_description",
+            "district",
+            "level",
+            "language",
+            "contacts",
+            "languages",
+        ]
+        labels = {
+            "category": _("Category"),
+            "problem_description": _("Describe the problem"),
+            "district": _("District"),
+            "level": _("Level"),
+            "language": _("Preferred language"),
+            "contacts": _("Contacts"),
+            "languages": _("Additional languages"),
+        }
+        widgets = {
+            "problem_description": forms.Textarea(attrs={"rows": 5}),
+            "contacts": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
+            "languages": forms.CheckboxSelectMultiple(),
+        }
+
+    category = forms.ModelChoiceField(
+        queryset=Tag_help.objects.all(),
+        empty_label="Select category",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    district = forms.ModelChoiceField(
+        queryset=Region.objects.all(),
+        empty_label="Select district",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    level = forms.ChoiceField(
+        choices=Level.LEVEL_CHOICES,
+        initial="1",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    language = forms.ModelChoiceField(
+        queryset=Language.objects.all(),
+        empty_label="Select language",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+    languages = forms.ModelMultipleChoiceField(
+        queryset=Language.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+    )

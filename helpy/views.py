@@ -215,3 +215,90 @@ def about(request):
 
 def donate_view(request):
     return render(request, 'donate.html')
+
+class HelpMyView(LoginRequiredMixin, View):
+    template_name = "helpy/helpmy.html"
+    form_class = HelpRequestForm
+    login_url = reverse_lazy('accounts:sign_in')
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class(initial={"userNick": request.user.username})
+        return render(request, self.template_name, {"form": form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            userNick = form.cleaned_data["userNick"]
+            category = form.cleaned_data["category"]
+            problemDescription = form.cleaned_data["problemDescription"]
+            district = form.cleaned_data["district"]
+            level = form.cleaned_data["level"]
+            free_helpers = Helper.objects.filter(
+                Q(tags__name__in=category) | Q(languages__name__in=category),
+                region=district,
+                support_level__gte=level,
+                user_offer_is_free=True,
+            ).order_by("-vip", "?")
+            paginator = Paginator(free_helpers, 9)  # 9 results per page
+            page = request.GET.get("page")
+            free_helpers = paginator.get_page(page)
+            help_requests_count = HelpRequest.objects.all().count()
+            active_helpers_count = Helper.objects.filter(
+                user_offer_is_free=True
+            ).count()
+            stats = Stats.objects.get(date=date.today())
+            online_users_count = stats.online_users
+            return render(
+                request,
+                "helpy/help.html",
+                {
+                    "form": form,
+                    "free_helpers": free_helpers,
+                    "active_helpers_count": active_helpers_count,
+                    "help_requests_count": help_requests_count,
+                    "online_users_count": online_users_count,
+                },
+            )
+        else:
+            return render(request, self.template_name, {"form": form})
+class ChooseHelperView(LoginRequiredMixin, View):
+    template_name = "helpy/choose_helper.html"
+    form_class = UserRequestForm
+
+    def get(self, request, helper_nickname, *args, **kwargs):
+        helper = MyUser.objects.get(userNick=helper_nickname)
+        form = self.form_class(initial={"helper_nickname": helper_nickname})
+        return render(request, self.template_name, {"helper": helper, "form": form})
+
+    def post(self, request, helper_nickname, *args, **kwargs):
+        helper = MyUser.objects.get(userNick=helper_nickname)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user_request = form.save(commit=False)
+            user_request.user = request.user
+            user_request.helper_nickname = helper_nickname
+            user_request.save()
+
+            # Create a HelpRequest based on the user_request
+            help_request = HelpRequest.objects.create(
+                user_nick=request.user.userNick,
+                category=user_request.selected_service,
+                problem_description=user_request.comment,
+                district=user_request.district,
+                level=user_request.level_of_help,
+                language=user_request.languages,
+                contacts=user_request.contacts,
+            )
+
+            # Combine the data into a single text field and save it to the UserRequest
+            data = {
+                "selected_service": user_request.selected_service,
+                "level_of_help": user_request.level_of_help,
+                "rating": user_request.rating,
+            }
+            user_request.UserRequest_TO_helper = str(data) + " " + user_request.comment
+            user_request.save()
+
+            return redirect('helpy:help_thanks')
+
+        return render(request, self.template_name, {"helper": helper, "form": form})

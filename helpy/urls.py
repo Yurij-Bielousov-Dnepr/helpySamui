@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib.auth import views as auth_views
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -32,7 +32,8 @@ urlpatterns = [
     ),
     path("about/", views.about, name="about"),
     path("donate/", views.donate_view, name="donate"),
-    path("success/", views.success, name="success"),
+    path('<str:helper_nickname>/', ChooseHelperView.as_view(), name='choose_helper'),
+    path('help_thanks/', TemplateView.as_view(template_name='help_thanks.html'), name='help_thanks'),
     path("menu/", views.my_view, name="my_menu"),
 ]
 
