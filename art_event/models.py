@@ -1,4 +1,5 @@
 # models.py
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -44,18 +45,29 @@ class Event(models.Model):
     date = models.DateField()
     location = models.CharField(max_length=75)
     rating = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tag_article, verbose_name="Tags")
     is_approved = models.BooleanField(default=False)
     is_favorite = models.BooleanField(default=False)
+    tags = models.ManyToManyField(Tag_article, default='moto_rent', verbose_name="Tags")
+
+    def clean(self):
+        super().clean()
+        if not self.tags.exists():
+            raise ValidationError('At least one tag is required.')
+
 
 
 class Article(models.Model):
     title = models.CharField(max_length=255)
     content = models.TextField()
     rating = models.IntegerField(default=0)
-    tags = models.ManyToManyField(Tag_article)
     is_approved = models.BooleanField(default=False)
     is_favorite = models.BooleanField(default=False)
+    tags = models.ManyToManyField(Tag_article, default='moto_rent', verbose_name="Tags")
+
+    def clean(self):
+        super().clean()
+        if not self.tags.exists():
+            raise ValidationError('At least one tag is required.')
 
 class Review(models.Model):
     RATING_CHOICES = (

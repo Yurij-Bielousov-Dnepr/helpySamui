@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
+from accounts.models import MyUser
+
 
 class Region(models.Model):
     CHAWENG = "Chaweng"
@@ -139,23 +141,20 @@ class HelpRequestLanguage(models.Model):
     help_request = models.ForeignKey(HelpRequest, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
+from django.utils.translation import gettext_lazy as _
 
-class Re_view(models.Model):
+class UserRequest(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='requests')
+    helper_nickname = models.CharField(max_length=255)
+    date = models.DateField()
     RATING_CHOICES = (
-        (1, "1 звезда"),
-        (2, "2 звезды"),
-        (3, "3 звезды"),
-        (4, "4 звезды"),
-        (5, "5 звезд"),
+        (1, "1 star"),
+        (2, "2 stars"),
+        (3, "3 stars"),
+        (4, "4 stars"),
+        (5, "5 stars"),
     )
-
-    LEVEL_CHOICES = [
-        (1, "Level 1"),
-        (2, "Level 2"),
-        (3, "Level 3"),
-    ]
-
-    TAG_CHOICES = [
+    name_choices = (
         ("moto_rent", _("Moto Rent")),
         ("moto_beginner", _("Moto Beginner")),
         ("moto_sos", _("Moto SOS")),
@@ -171,16 +170,9 @@ class Re_view(models.Model):
         ("souvenirs", _("Souvenirs")),
         ("ind_tour", _("Individual Tour")),
         ("escort", _("Escort")),
-    ]
-
-    reviewer_name = models.CharField(max_length=255)
-    helper_name = models.CharField(max_length=255)
+    )
+    selected_service = models.CharField(choices=name_choices, max_length=20)
+    level_of_help = models.PositiveSmallIntegerField(choices=Level.LEVEL_CHOICES)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
-    tag = models.CharField(choices=TAG_CHOICES, max_length=50, blank=False)
-    level_of_service = models.PositiveSmallIntegerField(choices=LEVEL_CHOICES)
-    review_text = models.TextField()
-    wishes = models.TextField(blank=True)
-    is_approved = models.BooleanField(default=False)
-
     def __str__(self):
-        return f"Review for {self.helper_name} by {self.reviewer_name}"
+        return f"Request {self.pk}"

@@ -43,7 +43,7 @@ class Re_view(models.Model):
     reviewer_name = models.CharField(max_length=255)
     helper_name = models.CharField(max_length=255)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
-    tag = models.CharField(choices=TAG_CHOICES, max_length=50, blank=False)
+    tag = models.CharField(choices=TAG_CHOICES, max_length=100, blank=False)
     level_of_service = models.PositiveSmallIntegerField(choices=LEVEL_CHOICES)
     review_text = models.TextField()
     wishes = models.TextField(blank=True)
@@ -51,6 +51,7 @@ class Re_view(models.Model):
 
     def __str__(self):
         return f"Review for {self.helper_name} by {self.reviewer_name}"
+
 
     # Review - для отзыва на статью или событие
 class Review(models.Model):
