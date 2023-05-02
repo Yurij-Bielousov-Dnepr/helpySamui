@@ -4,11 +4,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-from art_event.models import Event, Article
-from helpy.models import Region, Language
+# from art_event.models import Event, Article
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
 
 
 class UserManager(BaseUserManager):
@@ -72,33 +70,6 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return self.is_superuser
-
-
-
-
-class Favorites(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
-    article = models.ForeignKey(
-        Article, on_delete=models.CASCADE, null=True, blank=True
-    )
-    is_favorite = models.BooleanField(default=False)
-
-
-class Stats(models.Model):
-    date = models.DateField(auto_now_add=True)
-    active_helpers = models.IntegerField(default=0)
-    help_requests = models.IntegerField(default=0)
-    online_users = models.IntegerField(default=0)
-    last_activity = models.ForeignKey(
-        MyUser, on_delete=models.SET_NULL, null=True, blank=True
-    )
-
-    class Meta:
-        verbose_name_plural = "Stats"
-
-    def __str__(self):
-        return f"{self.date} - Active helpers: {self.active_helpers}, Help requests: {self.help_requests}, Online users: {self.online_users}"
 
 class Sponsor(models.Model):
     name = models.CharField(max_length=255)
@@ -185,3 +156,17 @@ class Level(models.Model):
 
     def __str__(self):
         return f"Level {self.level}"
+class Stats(models.Model):
+    date = models.DateField(auto_now_add=True)
+    active_helpers = models.IntegerField(default=0)
+    help_requests = models.IntegerField(default=0)
+    online_users = models.IntegerField(default=0)
+    last_activity = models.ForeignKey(
+        MyUser, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    class Meta:
+        verbose_name_plural = "Stats"
+
+    def __str__(self):
+        return f"{self.date} - Active helpers: {self.active_helpers}, Help requests: {self.help_requests}, Online users: {self.online_users}"

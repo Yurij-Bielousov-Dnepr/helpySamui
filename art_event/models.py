@@ -3,7 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from accounts.models import MyUser
 
 
 class Tag_article(models.Model):
@@ -83,4 +84,13 @@ class Review(models.Model):
     comment = models.TextField()
     relevance = models.IntegerField( choices=RATING_CHOICES, verbose_name="Relevance" )
     engagement = models.IntegerField( choices=RATING_CHOICES, verbose_name="Engagement" )
+
+class Favorites(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
+    article = models.ForeignKey(
+        Article, on_delete=models.CASCADE, null=True, blank=True
+    )
+    is_favorite = models.BooleanField(default=False)
+
 

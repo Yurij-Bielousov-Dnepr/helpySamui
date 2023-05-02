@@ -1,6 +1,5 @@
 from django.contrib import admin
-from accounts.models import Sponsor, Stats, MyUser, Language, SupportLevel, Region, Level, Favorites
-
+from accounts.models import Sponsor, Stats, MyUser, Language, SupportLevel, Region, Level
 
 @admin.register(Sponsor)
 class SponsorAdmin(admin.ModelAdmin):
@@ -28,9 +27,5 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Level)
 class LevelAdmin(admin.ModelAdmin):
-    pass
-
-@admin.register(Favorites)
-class FavoritesAdmin(admin.ModelAdmin):
     pass
 

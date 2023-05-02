@@ -3,7 +3,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-
 from accounts.models import MyUser
 
 
@@ -143,6 +142,7 @@ class HelpRequestLanguage(models.Model):
 
 from django.utils.translation import gettext_lazy as _
 
+
 class UserRequest(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='requests')
     helper_nickname = models.CharField(max_length=255)
@@ -170,9 +170,15 @@ class UserRequest(models.Model):
         ("souvenirs", _("Souvenirs")),
         ("ind_tour", _("Individual Tour")),
         ("escort", _("Escort")),
+
     )
     selected_service = models.CharField(choices=name_choices, max_length=20)
     level_of_help = models.PositiveSmallIntegerField(choices=Level.LEVEL_CHOICES)
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    comment = models.TextField(blank=True)  # Добавляем поле comment
+    district = models.ForeignKey(
+        Region, on_delete=models.SET_NULL, null=True, blank=True)
+
     def __str__(self):
         return f"Request {self.pk}"
+

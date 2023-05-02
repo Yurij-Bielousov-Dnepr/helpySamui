@@ -1,10 +1,10 @@
 from django import forms
 from django.utils.translation import gettext as _
-from accounts.models import Article, Event, Language, Region, Level
+from accounts.models import Language, Region, Level
 from helpy.models import HelpRequest
 from .models import Tag_help, SupportLevel, Region, Helper
 from reviews.models import Re_view, Review
-from art_event.models import Tag_article
+from art_event.models import Tag_article, Article, Event
 from django.forms.widgets import CheckboxSelectMultiple
 from django.urls import reverse_lazy
 from django.views.generic import CreateView

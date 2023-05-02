@@ -1,5 +1,5 @@
 from django.contrib import admin
-from art_event.models import Article, Event
+from art_event.models import Article, Event, Favorites
 from .models import Tag_article
 
 
@@ -43,5 +43,9 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('id', 'article', 'reviewer_name', 'rating', 'relevance', 'engagement')
     list_filter = ('rating', 'relevance', 'engagement')
     search_fields = ('article__title', 'reviewer_name')
+
+@admin.register(Favorites)
+class FavoritesAdmin(admin.ModelAdmin):
+    pass
 
 
