@@ -222,7 +222,7 @@ class HelpMyView(LoginRequiredMixin, View):
     login_url = reverse_lazy('accounts:sign_in')
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class(initial={"userNick": request.user.username})
+        form = self.form_class(initial={"userNick": request.user.email})
         return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
@@ -261,6 +261,7 @@ class HelpMyView(LoginRequiredMixin, View):
             )
         else:
             return render(request, self.template_name, {"form": form})
+
 class ChooseHelperView(LoginRequiredMixin, View):
     template_name = "helpy/choose_helper.html"
     form_class = UserRequestForm

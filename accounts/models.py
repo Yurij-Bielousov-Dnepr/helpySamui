@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 # from art_event.models import Event, Article
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES
 
 
 class UserManager(BaseUserManager):
@@ -48,8 +49,8 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=20, blank=True)
     about_me = models.TextField(blank=True)
 
-    USERNAME_FIELD = 'userNick'
-    REQUIRED_FIELDS = ['email']
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
     objects = UserManager()
 
     def __str__(self):

@@ -140,7 +140,6 @@ class HelpRequestLanguage(models.Model):
     help_request = models.ForeignKey(HelpRequest, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
-from django.utils.translation import gettext_lazy as _
 
 
 class UserRequest(models.Model):
