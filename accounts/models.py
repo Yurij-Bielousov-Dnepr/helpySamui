@@ -81,82 +81,54 @@ class Sponsor(models.Model):
 
 
 class Region(models.Model):
-    CHAWENG = "Chaweng"
-    LAMAI = "Lamai"
-    LIPA_NOI = "Lipa Noi"
-    NATHON = "Nathon"
-    BANG_BOR = "Bang Bor"
-    MAENAM = "Maenam"
-    BOPHUT = "Bophut"
-    CHOENG_MON = "Choeng Mon"
-    HUA_THANON = "Hua Thanon"
-
-    REGION_CHOICES = [
-        ("", "Choose all"),  # добавляем пустой элемент
-        (CHAWENG, "Chaweng"),
-        (LAMAI, "Lamai"),
-        (LIPA_NOI, "Lipa Noi"),
-        (NATHON, "Nathon"),
-        (BANG_BOR, "Bang Bor"),
-        (MAENAM, "Maenam"),
-        (BOPHUT, "Bophut"),
-        (CHOENG_MON, "Choeng Mon"),
-        (HUA_THANON, "Hua Thanon"),
-    ]
-
-    name = models.CharField(max_length=255, choices=REGION_CHOICES)
+    name = models.CharField(max_length=55, choices=REGION_CHOICES)
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in REGION_CHOICES:
+                Region.objects.get_or_create(name=choice[1])
+        super().save(*args, **kwargs)
 
 class Language(models.Model):
-    UKRAINIAN = "uk"
-    THAI = "th"
-    ENGLISH = "en"
-    FRENCH = "fr"
-    ITALIAN = "it"
-    GERMAN = "de"
-    RUSSIAN = "ru"
-
-    LANGUAGE_CHOICES = [
-        (UKRAINIAN, "Українська"),
-        (THAI, "ไทย"),
-        (ENGLISH, "English"),
-        (FRENCH, "Français"),
-        (ITALIAN, "Italiano"),
-        (GERMAN, "Deutsch"),
-        (RUSSIAN, "Русский"),
-    ]
-
-    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES)
 
     def __str__(self):
         return self.language
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LANGUAGE_CHOICES:
+                Language.objects.get_or_create(language=choice[1])
+        super().save(*args, **kwargs)
 
 class SupportLevel(models.Model):
-    LEVEL_CHOICES = [
-        (1, "Level 1"),
-        (2, "Level 2"),
-        (3, "Level 3"),
-    ]
     level = models.IntegerField(choices=LEVEL_CHOICES)
 
     def __str__(self):
         return f"Level {self.level}"
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LEVEL_CHOICES:
+                SupportLevel.objects.get_or_create(level=choice[0])
+        super().save(*args, **kwargs)
 
 class Level(models.Model):
-    LEVEL_CHOICES = [
-        (1, "Level 1"),
-        (2, "Level 2"),
-        (3, "Level 3"),
-    ]
     level = models.IntegerField(choices=LEVEL_CHOICES)
 
     def __str__(self):
         return f"Level {self.level}"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LEVEL_CHOICES:
+                Level.objects.get_or_create(level=choice[0])
+        super().save(*args, **kwargs)
+
+
 class Stats(models.Model):
     date = models.DateField(auto_now_add=True)
     active_helpers = models.IntegerField(default=0)

@@ -8,6 +8,10 @@ from django import forms
 from django.forms.widgets import CheckboxSelectMultiple
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from django.contrib.contenttypes.models import ContentType
+from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES, TAG_ARTICLE_CHOICES, \
+    REVIEW_RATING_CHOICES
+
 
 
 # class ReviewForm(forms.ModelForm):
@@ -93,3 +97,34 @@ class ReviewForm(forms.ModelForm):
         widgets = {
             "rating": forms.NumberInput(attrs={"min": 1, "max": 5}),
         }
+
+class ReviewForm_Art_Event(forms.ModelForm):
+    review_type = forms.ChoiceField(choices=Review.REVIEW_TYPES)
+    content_id = forms.IntegerField()
+    reviewer_name = forms.CharField(max_length=255)
+    comment = forms.CharField(widget=forms.Textarea)
+    rating = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 1, 'max': 5}))
+    relevance = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 1, 'max': 5}))
+    engagement = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 1, 'max': 5}))
+
+    class Meta:
+        model = Review
+        fields = ['review_type', 'content_id', 'reviewer_name', 'comment', 'rating', 'relevance', 'engagement']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        review_type = cleaned_data.get('review_type')
+        content_id = cleaned_data.get('content_id')
+
+        if review_type == 'article':
+            try:
+                Article.objects.get(pk=content_id)
+            except Article.DoesNotExist:
+                raise forms.ValidationError('Article does not exist')
+        elif review_type == 'event':
+            try:
+                Event.objects.get(pk=content_id)
+            except Event.DoesNotExist:
+                raise forms.ValidationError('Event does not exist')
+        else:
+            raise forms.ValidationError('Invalid review type')

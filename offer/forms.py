@@ -8,6 +8,7 @@ from art_event.models import Tag_article, Article, Event
 from django.forms.widgets import CheckboxSelectMultiple
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from helpySamui.constants import TAG_HELP_NAME_CHOICES, REVIEW_RATING_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES
 
 
 class DeleteProfileForm(forms.Form):
@@ -133,7 +134,7 @@ class HelpForm(forms.ModelForm):
         queryset=Level.objects.all(), label="Level", widget=forms.RadioSelect
     )
     language = forms.MultipleChoiceField(
-        choices=Language.LANGUAGE_CHOICES,
+        choices=LANGUAGE_CHOICES,
         label="Language",
         widget=forms.CheckboxSelectMultiple,
     )
@@ -143,7 +144,8 @@ class HelpForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if "language" in self.fields:
-            language_choices = dict(Language.LANGUAGE_CHOICES)
+
+            language_choices = dict(LANGUAGE_CHOICES)
             self.fields["language"].widget = forms.CheckboxSelectMultiple(
                 attrs={"class": "inline-checkbox"}
             )

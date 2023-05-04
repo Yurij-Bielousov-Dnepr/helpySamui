@@ -4,119 +4,76 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 from accounts.models import MyUser
+from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES, TAG_HELP_NAME_CHOICES, \
+    REVIEW_RATING_CHOICES
 
 
 class Region(models.Model):
-    CHAWENG = "Chaweng"
-    LAMAI = "Lamai"
-    LIPA_NOI = "Lipa Noi"
-    NATHON = "Nathon"
-    BANG_BOR = "Bang Bor"
-    MAENAM = "Maenam"
-    BOPHUT = "Bophut"
-    CHOENG_MON = "Choeng Mon"
-    HUA_THANON = "Hua Thanon"
-
-    REGION_CHOICES = [
-        ("", "Choose all"),  # добавляем пустой элемент
-        (CHAWENG, "Chaweng"),
-        (LAMAI, "Lamai"),
-        (LIPA_NOI, "Lipa Noi"),
-        (NATHON, "Nathon"),
-        (BANG_BOR, "Bang Bor"),
-        (MAENAM, "Maenam"),
-        (BOPHUT, "Bophut"),
-        (CHOENG_MON, "Choeng Mon"),
-        (HUA_THANON, "Hua Thanon"),
-    ]
-
-    name = models.CharField(max_length=255, choices=REGION_CHOICES)
+    name = models.CharField(max_length=55, choices=REGION_CHOICES)
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in REGION_CHOICES:
+                Region.objects.get_or_create(name=choice[1])
+        super().save(*args, **kwargs)
 
 class Language(models.Model):
-    UKRAINIAN = "uk"
-    THAI = "th"
-    ENGLISH = "en"
-    FRENCH = "fr"
-    ITALIAN = "it"
-    GERMAN = "de"
-    RUSSIAN = "ru"
-
-    LANGUAGE_CHOICES = [
-        (UKRAINIAN, "Українська"),
-        (THAI, "ไทย"),
-        (ENGLISH, "English"),
-        (FRENCH, "Français"),
-        (ITALIAN, "Italiano"),
-        (GERMAN, "Deutsch"),
-        (RUSSIAN, "Русский"),
-    ]
-
-    language = models.CharField(max_length=2, choices=LANGUAGE_CHOICES)
+    language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES)
 
     def __str__(self):
         return self.language
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LANGUAGE_CHOICES:
+                Language.objects.get_or_create(language=choice[1])
+        super().save(*args, **kwargs)
 
 class SupportLevel(models.Model):
-    LEVEL_CHOICES = [
-        (1, "Level 1"),
-        (2, "Level 2"),
-        (3, "Level 3"),
-    ]
     level = models.IntegerField(choices=LEVEL_CHOICES)
 
     def __str__(self):
         return f"Level {self.level}"
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LEVEL_CHOICES:
+                SupportLevel.objects.get_or_create(level=choice[0])
+        super().save(*args, **kwargs)
+
+class Level(models.Model):
+    level = models.IntegerField(choices=LEVEL_CHOICES)
+
+    def __str__(self):
+        return f"Level {self.level}"
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LEVEL_CHOICES:
+                Level.objects.get_or_create(level=choice[0])
+        super().save(*args, **kwargs)
+
+
 
 class Tag_help(models.Model):
-    name_choices = (
-        ("moto_rent", _("Moto Rent")),
-        ("moto_beginner", _("Moto Beginner")),
-        ("moto_sos", _("Moto SOS")),
-        ("rent_estate", _("Rent Estate")),
-        ("public_serv", _("Public Service")),
-        ("lang_schol", _("Language School")),
-        ("trabl", _("Travel")),
-        ("med_help", _("Medical Help")),
-        ("serv_transl", _("Translation Services")),
-        ("shopping_destination", _("Shopping Destination")),
-        ("clothing", _("Clothing")),
-        ("food", _("Food")),
-        ("souvenirs", _("Souvenirs")),
-        ("ind_tour", _("Individual Tour")),
-        ("escort", _("Escort")),
-    )
-    name = models.CharField(
-        max_length=255, choices=name_choices, verbose_name=_("Name")
-    )
+    name = models.CharField(max_length=255, choices=TAG_HELP_NAME_CHOICES, verbose_name=_("Name"))
 
     class Meta:
-        verbose_name = _("Tag_help")
+        verbose_name = _("Tag Help")
         verbose_name_plural = _("Tags")
 
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in TAG_HELP_NAME_CHOICES:
+                Tag_help.objects.get_or_create(name=choice[1])
+        super().save(*args, **kwargs)
 
-def __str__(self):
-    return self.name
-
-
-class Level(models.Model):
-    LEVEL_CHOICES = [
-        (1, "Level 1"),
-        (2, "Level 2"),
-        (3, "Level 3"),
-    ]
-    level = models.IntegerField(choices=LEVEL_CHOICES)
-
-    def __str__(self):
-        return f"Level {self.level}"
 
 
 class HelpRequest(models.Model):
@@ -140,44 +97,21 @@ class HelpRequestLanguage(models.Model):
     help_request = models.ForeignKey(HelpRequest, on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
-
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            for choice in LANGUAGE_CHOICES:
+                Language.objects.get_or_create(language=choice[0])
+        super().save(*args, **kwargs)
 
 class UserRequest(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, related_name='requests')
     helper_nickname = models.CharField(max_length=255)
     date = models.DateField()
-    RATING_CHOICES = (
-        (1, "1 star"),
-        (2, "2 stars"),
-        (3, "3 stars"),
-        (4, "4 stars"),
-        (5, "5 stars"),
-    )
-    name_choices = (
-        ("moto_rent", _("Moto Rent")),
-        ("moto_beginner", _("Moto Beginner")),
-        ("moto_sos", _("Moto SOS")),
-        ("rent_estate", _("Rent Estate")),
-        ("public_serv", _("Public Service")),
-        ("lang_schol", _("Language School")),
-        ("trabl", _("Travel")),
-        ("med_help", _("Medical Help")),
-        ("serv_transl", _("Translation Services")),
-        ("shopping_destination", _("Shopping Destination")),
-        ("clothing", _("Clothing")),
-        ("food", _("Food")),
-        ("souvenirs", _("Souvenirs")),
-        ("ind_tour", _("Individual Tour")),
-        ("escort", _("Escort")),
-
-    )
-    selected_service = models.CharField(choices=name_choices, max_length=20)
-    level_of_help = models.PositiveSmallIntegerField(choices=Level.LEVEL_CHOICES)
-    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
+    selected_service = models.CharField(choices=TAG_HELP_NAME_CHOICES, max_length=20)
+    level_of_help = models.PositiveSmallIntegerField(choices=LEVEL_CHOICES)
+    rating = models.PositiveSmallIntegerField(choices=REVIEW_RATING_CHOICES)
     comment = models.TextField(blank=True)  # Добавляем поле comment
-    district = models.ForeignKey(
-        Region, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.CharField(max_length=20, choices=REGION_CHOICES, blank=True, default="Lamai")
 
     def __str__(self):
         return f"Request {self.pk}"
-

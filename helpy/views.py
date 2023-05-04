@@ -19,7 +19,7 @@ from offer.models import Helper
 from .forms import *
 from .models import *
 from .my_menu import *
-
+from helpySamui.constants import *
 
 def my_view(request):
     menu_items = get_menu_items()

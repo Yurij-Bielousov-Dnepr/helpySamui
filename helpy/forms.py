@@ -5,6 +5,7 @@ from offer.models import Helper
 from django.forms.widgets import CheckboxSelectMultiple
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from helpySamui.constants import TAG_HELP_NAME_CHOICES, REVIEW_RATING_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES
 
 
 class DeleteProfileForm(forms.Form):
@@ -81,8 +82,10 @@ class HelpForm(forms.ModelForm):
     level = forms.ModelChoiceField(
         queryset=Level.objects.all(), label="Level", widget=forms.RadioSelect
     )
+    LANGUAGE_CHOICES = [(lang, lang) for lang in LANGUAGE_CHOICES]
+
     language = forms.MultipleChoiceField(
-        choices=Language.LANGUAGE_CHOICES,
+        choices=LANGUAGE_CHOICES,
         label="Language",
         widget=forms.CheckboxSelectMultiple,
     )
@@ -92,7 +95,7 @@ class HelpForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if "language" in self.fields:
-            language_choices = dict(Language.LANGUAGE_CHOICES)
+            language_choices = dict(LANGUAGE_CHOICES)
             self.fields["language"].widget = forms.CheckboxSelectMultiple(
                 attrs={"class": "inline-checkbox"}
             )
@@ -204,11 +207,9 @@ class UserRequestForm(forms.ModelForm):
             "contacts": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
         }
 
-    selected_service = forms.ChoiceField(
-        choices=UserRequest.name_choices, widget=forms.RadioSelect()
-    )
-    level_of_help = forms.ChoiceField(choices=Level.LEVEL_CHOICES, initial="1")
-    rating = forms.ChoiceField(choices=UserRequest.RATING_CHOICES, initial="1")
+    selected_service = forms.ChoiceField(choices=TAG_HELP_NAME_CHOICES, widget=forms.RadioSelect())
+    level_of_help = forms.ChoiceField(choices=LEVEL_CHOICES, initial="1")
+    rating = forms.ChoiceField(choices=REVIEW_RATING_CHOICES, initial="1")
     languages = forms.ModelMultipleChoiceField(
         queryset=Language.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -239,7 +240,7 @@ class HelpRequestForm(forms.ModelForm):
         widgets = {
             "problem_description": forms.Textarea(attrs={"rows": 5}),
             "contacts": forms.TextInput(attrs={"placeholder": "Enter your phone number"}),
-            "languages": forms.CheckboxSelectMultiple(),
+            "languages": forms.CheckboxSelectMultiple(choices=LANGUAGE_CHOICES),
         }
 
     category = forms.ModelChoiceField(
@@ -253,7 +254,7 @@ class HelpRequestForm(forms.ModelForm):
         widget=forms.Select(attrs={"class": "form-select"}),
     )
     level = forms.ChoiceField(
-        choices=Level.LEVEL_CHOICES,
+        choices=LEVEL_CHOICES,
         initial="1",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
