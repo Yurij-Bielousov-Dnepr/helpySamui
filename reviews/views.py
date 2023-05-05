@@ -2,9 +2,12 @@
 # from .forms import HelperForm
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import user_passes_test, login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
 from django.views.generic import ListView, UpdateView
@@ -209,3 +212,48 @@ def add_review(request):
     else:
         form = ReviewForm()
     return render(request, "reviews/review_add.html", {"form": form})
+
+def create_review_Art_Event(request):
+   if request.method == 'POST':
+        form = ReviewForm_Art_Event(request.POST)
+        if form.is_valid():
+            review_type = form.cleaned_data.get('review_type')
+            content_id = form.cleaned_data.get('content_id')
+            reviewer_name = form.cleaned_data.get('reviewer_name')
+            comment = form.cleaned_data.get('comment')
+            rating = form.cleaned_data.get('rating')
+            relevance = form.cleaned_data.get('relevance')
+            engagement = form.cleaned_data.get('engagement')
+
+            if review_type == 'article':
+                try:
+                    content_object = Article.objects.get(pk=content_id)
+                except ObjectDoesNotExist:
+                    form.add_error('content_id', 'Invalid article id')
+                    return render(request, 'review_add.html', {'form': form})
+
+            elif review_type == 'event':
+                try:
+                    content_object = Event.objects.get(pk=content_id)
+                except ObjectDoesNotExist:
+                    form.add_error('content_id', 'Invalid event id')
+                    return render(request, 'review_add.html', {'form': form})
+            else:
+                form.add_error('review_type', 'Invalid review type')
+                return render(request, 'review_add.html', {'form': form})
+
+            review = Review(
+                review_type=review_type,
+                content_object=content_object,
+                reviewer_name=reviewer_name,
+                comment=comment,
+                rating=rating,
+                relevance=relevance,
+                engagement=engagement,
+            )
+            review.save()
+
+            return render(request, 'review_add.html', {'review': review})
+        else:
+            form = ReviewForm_Art_Event()
+        return render(request, 'review_add.html', {'form': form})

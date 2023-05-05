@@ -99,7 +99,11 @@ class ReviewForm(forms.ModelForm):
         }
 
 class ReviewForm_Art_Event(forms.ModelForm):
-    review_type = forms.ChoiceField(choices=Review.REVIEW_TYPES)
+    REVIEW_TYPES = [
+        ('article', 'Article'),
+        ('event', 'Event'),
+    ]
+    review_type = forms.ChoiceField(choices=REVIEW_TYPES)
     content_id = forms.IntegerField()
     reviewer_name = forms.CharField(max_length=255)
     comment = forms.CharField(widget=forms.Textarea)
@@ -128,3 +132,5 @@ class ReviewForm_Art_Event(forms.ModelForm):
                 raise forms.ValidationError('Event does not exist')
         else:
             raise forms.ValidationError('Invalid review type')
+
+        return cleaned_data
