@@ -91,19 +91,8 @@ def review_edit(request, review_id):
     return render(request, 'reviews/review_edit.html', context)
 
 
-class ModerateReview(ListView):
-    """
-    Представление для модерации отзывов
-    """
-    model = Review
-    template_name = "moderation.html"
-    context_object_name = "reviews"
-
-    def get_queryset(self):
-         return Review.objects.filter(is_approved="0")
-
-
 # тут надо разобраться модернизировать вьюху чтобы она модерила все: статьи, события и отзывы
+@staff_member_required
 def moderation_view(request):
     article_form = ArticleModerationForm()
     event_form = EventModerationForm()
@@ -152,18 +141,29 @@ def moderation_view(request):
                     return redirect('edit_review', pk=review.pk)
                 elif review_form.cleaned_data['action'] == 'delete':
                     review.delete()
-                articles = Article.objects.filter(is_approved=False)
-                events = Event.objects.filter(is_approved=False)
-                reviews = ReviewHelper.objects.filter(is_approved=False)
 
-                return render(request, "moderation.html", {
-                    "articles": articles,
-                    "events": events,
-                    "reviews": reviews,
-                    "article_form": article_form,
-                    "event_form": event_form,
-                    "review_form": review_form,
-                })
+        if request.POST.get('event_approve'):
+            event = get_object_or_404(Event, pk=request.POST.get('event_approve'))
+            event.is_approved = True
+            event.save()
+
+        if request.POST.get('review_approve'):
+            review = get_object_or_404(ReviewArt_Event, pk=request.POST.get('review_approve'))
+            review.is_approved = True
+            review.save()
+
+        articles = Article.objects.filter(is_approved=False)
+        events = Event.objects.filter(is_approved=False)
+        reviews = ReviewHelper.objects.filter(is_approved=False)
+
+        return render(request, "moderation.html", {
+            "articles": articles,
+            "events": events,
+            "reviews": reviews,
+            "article_form": article_form,
+            "event_form": event_form,
+            "review_form": review_form,
+        })
 
 
 class ReviewCreateView(CreateView):
@@ -269,7 +269,7 @@ def ReviewCreateArt_Event(request):
             rate = form.cleaned_data["rate"]
             comment = form.cleaned_data["comment"]
             helper = Helper.objects.get(name=helper_nick)
-            Review.objects.create(
+            ReviewArt_Event.objects.create(
                 helper=helper,
                 category_help=category_help,
                 problem_description=problem_description,
@@ -310,7 +310,7 @@ def create_review_Art_Event(request):
                 form.add_error('review_type', 'Invalid review type')
                 return render(request, 'review_add.html', {'form': form})
 
-            review = Review(
+            review = ReviewArt_Event(
                 review_type=review_type,
                 content_object=content_object,
                 reviewer_name=reviewer_name,

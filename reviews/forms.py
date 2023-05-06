@@ -1,8 +1,9 @@
 from django import forms
+from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.utils.translation import gettext as _
 import reviews
-from .models import Helper, ReviewHelper, ReviewArt_Event
-from art_event.models import Article, Event, Review, Tag_article
+from .models import Helper, ReviewHelper, ReviewArt_Event, Like
+from art_event.models import Article, Event, Tag_article
 from accounts.models import *
 from django import forms
 from django.forms.widgets import CheckboxSelectMultiple
@@ -64,7 +65,7 @@ class ReviewForm_Art_Event(forms.ModelForm):
     engagement = forms.IntegerField(widget=forms.NumberInput(attrs={'min': 1, 'max': 5}))
 
     class Meta:
-        model = Review
+        model = ReviewArt_Event
         fields = ['review_type', 'content_id', 'reviewer_name', 'comment', 'rating', 'relevance', 'engagement']
 
     def clean(self):
@@ -129,7 +130,7 @@ class ArticleModerationForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'text']
+        fields = ['title', 'content']
 
 
 class EventModerationForm(forms.ModelForm):
@@ -142,7 +143,7 @@ class EventModerationForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = []
+        fields = ['title', 'description', 'location']
 
 
 class ReviewHelperModerationForm(forms.ModelForm):
@@ -155,4 +156,57 @@ class ReviewHelperModerationForm(forms.ModelForm):
 
     class Meta:
         model = ReviewHelper
-        fields = []
+        fields = ['reviewer_name', 'helper_name', 'review_text', 'wishes']
+
+
+class ReviewArtEventModerationForm(forms.ModelForm):
+    CHOICES = [
+        ('approve', 'Approve'),
+        ('edit', 'Edit'),
+        ('delete', 'Delete'),
+    ]
+    action = forms.ChoiceField(choices=CHOICES, widget=forms.RadioSelect())
+
+    class Meta:
+        model = ReviewArt_Event
+        fields = ['review_type', 'content_id', 'reviewer_name', 'comment', 'rating', 'relevance', 'engagement']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content_id'].widget.attrs['readonly'] = True
+
+    def clean_content_id(self):
+        content_id = self.cleaned_data['content_id']
+        review_type = self.cleaned_data['review_type']
+        if review_type == 'article':
+            content_type = ContentType.objects.get_for_model(Article)
+        elif review_type == 'event':
+            content_type = ContentType.objects.get_for_model(Event)
+        else:
+            raise forms.ValidationError('Invalid review type')
+        try:
+            content_object = content_type.get_object_for_this_type(id=content_id)
+        except content_type.model_class().DoesNotExist:
+            raise forms.ValidationError('Invalid content id')
+        self.cleaned_data['content_object'] = content_object
+        return content_id
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()
+        return instance
+
+
+ReviewArtEventModerationFormset = generic_inlineformset_factory(
+    ReviewArt_Event,
+    form=ReviewArtEventModerationForm,
+    extra=0,
+    can_delete=False,
+)
+
+
+
+
+
+

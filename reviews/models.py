@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
+
+from accounts.models import MyUser
 from offer.models import Helper
 from art_event.models import Article, Event
 from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES, TAG_ARTICLE_CHOICES, \
@@ -13,7 +15,7 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Like(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -43,20 +45,16 @@ class ReviewHelper(models.Model):
 
 
     # Review - для отзыва на статью или событие
-# class Review(models.Model):
-#     helper = models.ForeignKey(Helper, on_delete=models.CASCADE)
-#     customer_name = models.CharField(max_length=255)
-#     rating = models.IntegerField(choices=REVIEW_RATING_CHOICES)
-#     comment = models.TextField()
-#
 class ReviewArt_Event(models.Model):
     REVIEW_TYPES = [
         ('article', 'Article'),
         ('event', 'Event'),
     ]
     review_type = models.CharField(max_length=10, choices=REVIEW_TYPES)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
     content_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'content_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
     reviewer_name = models.CharField(max_length=255)
     comment = models.TextField()
     rating = models.IntegerField(choices=REVIEW_RATING_CHOICES)
@@ -74,4 +72,3 @@ class ReviewArt_Event(models.Model):
             elif self.review_type == 'event':
                 self.content_type = ContentType.objects.get_for_model(Event)
         super().save(*args, **kwargs)
-
