@@ -1,6 +1,7 @@
 # models.py
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
@@ -11,7 +12,16 @@ from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES
 from django.contrib.contenttypes.models import ContentType
 
 
-# Re_view - для отзыва на помошника
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    is_like = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# для отзыва на помошника
 class ReviewHelper(models.Model):
 
     reviewer_name = models.CharField(max_length=255)
@@ -22,6 +32,10 @@ class ReviewHelper(models.Model):
     review_text = models.TextField()
     wishes = models.TextField(blank=True)
     is_approved = models.BooleanField(default=False)
+    likes = GenericRelation(Like)
+
+    def get_like_url(self):
+        return reverse('like_toggle', args=[self.pk, self.__class__.__name__.lower()])
 
     def __str__(self):
         return f"Review for {self.helper_name} by {self.reviewer_name}"
@@ -35,7 +49,7 @@ class ReviewHelper(models.Model):
 #     rating = models.IntegerField(choices=REVIEW_RATING_CHOICES)
 #     comment = models.TextField()
 #
-class Review(models.Model):
+class ReviewArt_Event(models.Model):
     REVIEW_TYPES = [
         ('article', 'Article'),
         ('event', 'Event'),
@@ -48,6 +62,10 @@ class Review(models.Model):
     rating = models.IntegerField(choices=REVIEW_RATING_CHOICES)
     relevance = models.IntegerField(choices=REVIEW_RATING_CHOICES, verbose_name="Relevance")
     engagement = models.IntegerField(choices=REVIEW_RATING_CHOICES, verbose_name="Engagement")
+    likes = GenericRelation(Like)
+
+    def get_like_url(self):
+        return reverse('like_toggle', args=[self.pk, self.__class__.__name__.lower()])
 
     def save(self, *args, **kwargs):
         if not self.id:

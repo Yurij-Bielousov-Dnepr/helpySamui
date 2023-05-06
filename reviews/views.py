@@ -4,27 +4,91 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
+from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView, UpdateView
 from django.views.generic.edit import CreateView
-
+from .models import Like
 import reviews.models
 from .decorators import admin_only
 from .forms import *
 from reviews.models import *
+from .forms import ArticleModerationForm, EventModerationForm, ReviewHelperModerationForm
 
 
-@method_decorator(staff_member_required, name="dispatch")
-class ReviewUpdateView(UpdateView):
-    model = Review
-    fields = ["is_approved"]
-    template_name_suffix = "_update_form"
-    success_url = reverse_lazy("moderate")
+@login_required
+@require_POST
+@login_required
+@require_POST
+def like(request):
+    content_type_id = request.POST.get('content_type_id')
+    object_id = request.POST.get('object_id')
+    value = request.POST.get('value')
+
+    # Получаем тип модели
+    content_type = get_object_or_404(ContentType, pk=content_type_id)
+
+    # Получаем модель и объект по id
+    model_class = content_type.model_class()
+    obj = get_object_or_404(model_class, id=object_id)
+
+    # Получаем лайк для данного пользователя и объекта
+    like_obj, created = Like.objects.get_or_create(content_type=content_type, object_id=object_id, user=request.user)
+
+    # Устанавливаем значение лайка и сохраняем
+    like_obj.value = value
+    like_obj.save()
+
+    # Получаем количество лайков и дизлайков
+    likes_count = Like.objects.filter(content_type=content_type, object_id=object_id, value=True).count()
+    dislikes_count = Like.objects.filter(content_type=content_type, object_id=object_id, value=False).count()
+
+    # Возвращаем json с данными о количестве лайков и дизлайков
+    return JsonResponse({'likes_count': likes_count, 'dislikes_count': dislikes_count})
+
+
+@login_required
+def ReviewHelperEdit(request, pk):
+    review_helper = get_object_or_404(ReviewHelper, pk=pk)
+
+    if request.user != review_helper.reviewer_name and not request.user.is_staff:
+        raise Http404(_("You are not allowed to access this page."))
+
+    if request.method == "POST":
+        form = ReviewHelperEditForm(request.POST, instance=review_helper)
+        if form.is_valid():
+            review_helper = form.save()
+            return redirect("review_helper_detail", pk=review_helper.pk)
+    else:
+        form = ReviewHelperEditForm(instance=review_helper)
+
+    return render(request, "reviews/review_helper_edit.html", {"form": form})
+
+
+@login_required
+def review_edit(request, review_id):
+    review = get_object_or_404(ReviewArt_Event, pk=review_id)
+
+    if request.method == 'POST':
+        form = ReviewForm_Art_Event(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    else:
+        form = ReviewFormEdit_Art_Event(instance=review)
+
+    context = {
+        'form': form,
+        'review': review,
+    }
+
+    return render(request, 'reviews/review_edit.html', context)
 
 
 class ModerateReview(ListView):
@@ -40,85 +104,71 @@ class ModerateReview(ListView):
 
 
 # тут надо разобраться модернизировать вьюху чтобы она модерила все: статьи, события и отзывы
-@method_decorator(staff_member_required, name="dispatch")
-# @admin_only
 def moderation_view(request):
-    """
-    Представление для модерации статей, событий и отзывов помощников
-    """
-    articles = Article.objects.filter(is_approved=False)
-    events = Event.objects.filter(is_approved=False)
-    re_views = Re_view.objects.filter(is_approved=False)
-    return render(
-        request, "moderation.html", {"articles": articles, "events": events, "reviews": re_views}
-    )
+    article_form = ArticleModerationForm()
+    event_form = EventModerationForm()
+    review_form = ReviewHelperModerationForm()
 
-@login_required
-def review_edit(request, pk):
-    """
-    Представление для редактирования отзыва
-    """
-    review = get_object_or_404(reviews.models.Review, pk=pk)
-    if not request.user.is_staff and review.customer_name != request.user:
-        return redirect('review_detail', pk=review.pk)
     if request.method == 'POST':
-        form = Review_editForm(request.POST, instance=review)
-        if form.is_valid():
-            form.save()
-            return redirect('review_detail', pk=review.pk)
-    else:
-        form = ReviewForm(instance=review)
-    return render(request, 'reviews/review_edit.html', {'form': form})
+        article_id = request.POST.get('article_id')
+        event_id = request.POST.get('event_id')
+        review_id = request.POST.get('review_id')
 
-@user_passes_test(lambda u: u.is_staff)
-def moderation(request):
-    articles = Article.objects.filter(is_approved=False)
-    events = Event.objects.filter(is_approved=False)
-    re_views = Re_view.objects.filter(is_approved=False)
+        if article_id:
+            article = get_object_or_404(Article, pk=article_id)
+            article_form = ArticleModerationForm(request.POST, instance=article)
+            if article_form.is_valid():
+                if article_form.cleaned_data['action'] == 'approve':
+                    article.is_approved = True
+                    article.save()
+                elif article_form.cleaned_data['action'] == 'edit':
+                    article.save()
+                    return redirect('edit_article', pk=article.pk)
+                elif article_form.cleaned_data['action'] == 'delete':
+                    article.delete()
 
-    if request.method == "POST":
-        for obj in articles:
-            action = request.POST.get("action_{}".format(obj.id))
-            if action == "approve":
-                obj.is_approved = True
-                obj.save()
-            elif action == "delete":
-                obj.delete()
-            elif action == "edit":
-                return redirect("update_article", obj.pk)
+        if event_id:
+            event = get_object_or_404(Event, pk=event_id)
+            event_form = EventModerationForm(request.POST, instance=event)
+            if event_form.is_valid():
+                if event_form.cleaned_data['action'] == 'approve':
+                    event.is_approved = True
+                    event.save()
+                elif event_form.cleaned_data['action'] == 'edit':
+                    event.save()
+                    return redirect('edit_event', pk=event.pk)
+                elif event_form.cleaned_data['action'] == 'delete':
+                    event.delete()
 
-        for obj in events:
-            action = request.POST.get("action_{}".format(obj.id))
-            if action == "approve":
-                obj.is_approved = True
-                obj.save()
-            elif action == "delete":
-                obj.delete()
-            elif action == "edit":
-                return redirect("update_event", pk=obj.pk)
+        if review_id:
+            review = get_object_or_404(ReviewHelper, pk=review_id)
+            review_form = ReviewHelperModerationForm(request.POST, instance=review)
+            if review_form.is_valid():
+                if review_form.cleaned_data['action'] == 'approve':
+                    review.is_approved = True
+                    review.save()
+                elif review_form.cleaned_data['action'] == 'edit':
+                    review.save()
+                    return redirect('edit_review', pk=review.pk)
+                elif review_form.cleaned_data['action'] == 'delete':
+                    review.delete()
+                articles = Article.objects.filter(is_approved=False)
+                events = Event.objects.filter(is_approved=False)
+                reviews = ReviewHelper.objects.filter(is_approved=False)
 
-        for obj in re_views:
-            action = request.POST.get("action_{}".format(obj.id))
-            if action == "approve":
-                obj.is_approved = True
-                obj.save()
-            elif action == "delete":
-                obj.delete()
-            elif action == "edit":
-                return redirect("review_edit", obj.pk)
+                return render(request, "moderation.html", {
+                    "articles": articles,
+                    "events": events,
+                    "reviews": reviews,
+                    "article_form": article_form,
+                    "event_form": event_form,
+                    "review_form": review_form,
+                })
 
-        return redirect("moderation")
-
-    context = {
-        "articles": articles,
-        "events": events,
-        "reviews": re_views,
-    }
-    return render(request, "moderation.html", context)
 
 class ReviewCreateView(CreateView):
-    model = Re_view
-    form_class = ReviewForm
+    model = ReviewHelper
+    form_class = ReviewHelperCreateForm
     template_name = "reviews/review_add.html"
     success_url = reverse_lazy("reviews:thanks")
 
@@ -136,8 +186,9 @@ class ReviewCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["form"] = ReviewForm()
+        context["form"] = ReviewHelperCreateForm()
         return context
+
 
 @login_required
 def review_helper_edit(request, pk):
@@ -148,13 +199,15 @@ def review_helper_edit(request, pk):
     if not request.user.is_staff and review.reviewer_name != request.user:
         return redirect('review_helper_detail', pk=review.pk)
     if request.method == 'POST':
-        form = ReviewHelperForm(request.POST, instance=review)
+        form = ReviewHelperEditForm(request.POST, instance=review)
         if form.is_valid():
             form.save()
             return redirect('review_helper_detail', pk=review.pk)
     else:
-        form = ReviewHelperForm(instance=review)
+        form = ReviewHelperEditForm(instance=review)
     return render(request, 'reviews/review_helper_edit.html', {'form': form})
+
+
 def review_helper(request):
     context = {
         "page_title": _("User Reviews"),
@@ -168,7 +221,7 @@ def review_helper(request):
 
 
 def review_list_helper(request):
-    reviews = Re_view.objects.all()
+    reviews = ReviewHelper.objects.all()
 
     sort_by = request.GET.get("sort", "rating")
     sort_order = request.GET.get("order", "desc")
@@ -190,14 +243,14 @@ def review_list_helper(request):
 
 
 def review_detail(request, pk):
-    review = get_object_or_404(Re_view, pk=pk)
+    review = get_object_or_404(ReviewHelper, pk=pk)
     context = {
         "review": review,
     }
     return render(request, "reviews/reviews_detail.html", context)
 
 def review_list(request):
-    reviews = Review.objects.all()
+    reviews = ReviewArt_Event.objects.all()
     order = request.GET.get("order", "-created_at")
     paginator = Paginator(reviews.order_by(order), 9)
     page = request.GET.get("page")
@@ -206,9 +259,9 @@ def review_list(request):
     return render(request, "reviews/reviews_list.html", context=context)
 
 
-def add_review(request):
+def ReviewCreateArt_Event(request):
     if request.method == "POST":
-        form = ReviewForm(request.POST)
+        form = ReviewForm_Art_Event(request.POST)
         if form.is_valid():
             helper_nick = form.cleaned_data["helper_nick"]
             category_help = form.cleaned_data["category_help"]
@@ -225,7 +278,7 @@ def add_review(request):
             )
             return redirect("reviews")
     else:
-        form = ReviewForm()
+        form = ReviewForm_Art_Event()
     return render(request, "reviews/review_add.html", {"form": form})
 
 def create_review_Art_Event(request):
