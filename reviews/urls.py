@@ -29,7 +29,7 @@ urlpatterns = [
     path(
         "reviews/moderate/",
         staff_member_required(ModerateReview.as_view()),
-        name=" moderation_view",
+        name="moderation_view",
     ),
 ]
 if settings.DEBUG:

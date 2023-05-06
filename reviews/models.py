@@ -12,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 
 
 # Re_view - для отзыва на помошника
-class Re_view(models.Model):
+class ReviewHelper(models.Model):
 
     reviewer_name = models.CharField(max_length=255)
     helper_name = models.CharField(max_length=255)

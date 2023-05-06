@@ -139,7 +139,22 @@ class ReviewCreateView(CreateView):
         context["form"] = ReviewForm()
         return context
 
-
+@login_required
+def review_helper_edit(request, pk):
+    """
+    Представление для редактирования отзыва о помощнике
+    """
+    review = get_object_or_404(ReviewHelper, pk=pk)
+    if not request.user.is_staff and review.reviewer_name != request.user:
+        return redirect('review_helper_detail', pk=review.pk)
+    if request.method == 'POST':
+        form = ReviewHelperForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('review_helper_detail', pk=review.pk)
+    else:
+        form = ReviewHelperForm(instance=review)
+    return render(request, 'reviews/review_helper_edit.html', {'form': form})
 def review_helper(request):
     context = {
         "page_title": _("User Reviews"),

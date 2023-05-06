@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext as _
 import reviews
-from .models import Helper, Review, Re_view
+from .models import Helper, Review, Re_view, ReviewHelper
 from art_event.models import Article, Event, Review, Tag_article
 from accounts.models import *
 from django import forms
@@ -10,8 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.contenttypes.models import ContentType
 from helpySamui.constants import REGION_CHOICES, LANGUAGE_CHOICES, LEVEL_CHOICES, TAG_ARTICLE_CHOICES, \
-    REVIEW_RATING_CHOICES
-
+    REVIEW_RATING_CHOICES, TAG_HELP_NAME_CHOICES
 
 
 # class ReviewForm(forms.ModelForm):
@@ -85,19 +84,45 @@ class Review_editForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'class': 'form-control'}),
             'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': '1', 'max': '5'}),
         }
-class ReviewForm(forms.ModelForm):
+
+
+class ReviewHelperCreateForm(forms.ModelForm):
     class Meta:
-        model = reviews.models.Review
-        fields = ["customer_name", "rating", "comment"]
+        model = ReviewHelper
+        fields = ["reviewer_name", "helper_name", "rating", "tag", "level_of_service", "review_text", "wishes"]
         labels = {
-            "customer_name": _("Helper Nickname"),
-            "rating": _("Rate"),
-            "comment": _("Comment"),
+            "reviewer_name": _("Reviewer Name"),
+            "helper_name": _("Helper Name"),
+            "rating": _("Rating"),
+            "tag": _("Tag"),
+            "level_of_service": _("Level of Service"),
+            "review_text": _("Review Text"),
+            "wishes": _("Wishes"),
         }
         widgets = {
             "rating": forms.NumberInput(attrs={"min": 1, "max": 5}),
+            "tag": forms.Select(choices=TAG_HELP_NAME_CHOICES),
+            "level_of_service": forms.Select(choices=LEVEL_CHOICES),
         }
 
+class ReviewHelperEditForm(forms.ModelForm):
+    class Meta:
+        model = ReviewHelper
+        fields = ["reviewer_name", "helper_name", "rating", "tag", "level_of_service", "review_text", "wishes"]
+        labels = {
+            "reviewer_name": _("Your Name"),
+            "helper_name": _("Helper's Name"),
+            "rating": _("Rating"),
+            "tag": _("Tag"),
+            "level_of_service": _("Level of Service"),
+            "review_text": _("Review Text"),
+            "wishes": _("Wishes"),
+        }
+        widgets = {
+            "rating": forms.NumberInput(attrs={"min": 1, "max": 5}),
+            "level_of_service": forms.RadioSelect(choices=LEVEL_CHOICES),
+            "tag": forms.RadioSelect(choices=TAG_HELP_NAME_CHOICES),
+        }
 class ReviewForm_Art_Event(forms.ModelForm):
     REVIEW_TYPES = [
         ('article', 'Article'),
