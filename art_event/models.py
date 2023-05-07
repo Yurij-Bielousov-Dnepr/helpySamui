@@ -23,6 +23,7 @@ class Tag_article(models.Model):
     class Meta:
         app_label = 'art_event'
 
+
 class Event(models.Model):
     title = models.CharField(max_length=55)
     description = models.CharField(max_length=255)
@@ -31,11 +32,13 @@ class Event(models.Model):
     rating = models.IntegerField(default=0)
     is_approved = models.BooleanField(default=False)
     is_favorite = models.BooleanField(default=False)
-    tags = models.ManyToManyField(Tag_article, choices=TAG_ARTICLE_CHOICES, verbose_name="Tags")
+    tags = models.ManyToManyField(Tag_article, verbose_name="Tags", null=False, blank=False)
+
     def clean(self):
         super().clean()
-        if not self.tags.exists():
-            raise ValidationError('At least one tag is required.')
+        for tag in self.tags.all():
+            if tag.name not in dict(TAG_ARTICLE_CHOICES).keys():
+                raise ValidationError(f"Tag '{tag.name}' is not a valid choice.")
 
 
 
@@ -45,12 +48,14 @@ class Article(models.Model):
     rating = models.IntegerField(default=0)
     is_approved = models.BooleanField(default=False)
     is_favorite = models.BooleanField(default=False)
-    tags = models.ManyToManyField(Tag_article, choices=TAG_ARTICLE_CHOICES, verbose_name="Tags")
+    tags = models.ManyToManyField(Tag_article, verbose_name="Tags", null=False, blank=False)
 
     def clean(self):
         super().clean()
-        if not self.tags.exists():
-            raise ValidationError('At least one tag is required.')
+        for tag in self.tags.all():
+            if tag.name not in dict(TAG_ARTICLE_CHOICES).keys():
+                raise ValidationError(f"Tag '{tag.name}' is not a valid choice.")
+
 
 class Review(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
