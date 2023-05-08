@@ -20,6 +20,7 @@ from .forms import *
 from .models import *
 from .my_menu import *
 from helpySamui.constants import *
+from helpy.context_processors import footer_context
 
 def my_view(request):
     menu_items = get_menu_items()
