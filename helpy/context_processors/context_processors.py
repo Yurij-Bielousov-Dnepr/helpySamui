@@ -3,7 +3,9 @@ from django.shortcuts import render
 from django.urls import reverse
 from accounts.models import Sponsor
 import traceback
-
+from .get_languages_with_flags import get_languages_with_flags
+from django.conf import settings
+from django.templatetags.static import static
 
 # def footer_context(request):
 #     sponsors = Sponsor.objects.all()
@@ -20,17 +22,19 @@ import traceback
 #
 #     return {'menu_items': items}
 #
+
+
 def languages_with_flags(request):
-    languages = [
-        {"code": "uk", "name": "Українська", "flag": "ua"},
-        {"code": "th", "name": "ภาษาไทย", "flag": "th"},
-        {"code": "en", "name": "English", "flag": "us"},
-        {"code": "fr", "name": "Français", "flag": "fr"},
-        {"code": "it", "name": "Italiano", "flag": "it"},
-        {"code": "de", "name": "Deutsch", "flag": "de"},
-        {"code": "ru", "name": "Русский", "flag": "ru"},
-    ]
-    return {"languages_with_flags": languages}
+    languages = get_languages_with_flags(settings.LANGUAGES)
+    languages_with_flags = []
+    for language in languages:
+        language_with_flag = {
+            'code': language['code'],
+            'name': language['name'],
+            'flag': static(f'flags/{language["flag"]}.svg'),
+        }
+        languages_with_flags.append(language_with_flag)
+    return {'languages_with_flags': languages_with_flags}
 
 def footer_context(request):
     try:

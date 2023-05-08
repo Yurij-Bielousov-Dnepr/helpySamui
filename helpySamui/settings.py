@@ -84,12 +84,13 @@ TELEGRAM_BOT_WEBHOOK_URL = "https://yourdomain.com/telegram-bot/"
 LANGUAGES = [
     ("uk", "Українська"),
     ("th", "ภาษาไทย"),
-    ("en", "English"),
+    ("en-us", "English"),
     ("fr", "Français"),
     ("it", "Italiano"),
     ("de", "Deutsch"),
     ("ru", "Русский"),
 ]
+
 ROOT_URLCONF = "helpySamui.urls"
 MEDIA_URL = "media/"
 SITE_URL = "http://127.0.0.1:8000/"
@@ -140,7 +141,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 'helpy.context_processors.footer_context',
                 # 'helpy.context_processors.languages_with_flags',
-                "helpy.context_processors.languages_flags.",
+                # "helpy.context_processors.languages_flags.",
                 # "helpy.context_processors.menu_items",
                 "django.template.context_processors.i18n",
                 "django.template.context_processors.media",

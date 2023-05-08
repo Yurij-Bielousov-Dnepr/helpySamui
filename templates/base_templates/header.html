@@ -19,16 +19,17 @@
 <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
 
 <link rel="stylesheet" type="text/css" href="{% static 'bootstrap4/css/bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
     <script src="{% static 'jquery/jquery-3.6.3.min.js' %}"></script>
     <script src="{% static 'bootstrap4/js/bootstrap.min.js' %}"></script>
 </head>
 <body>
-<label for="language-select">{% trans "Choose a language" %}:</label>
-<select id="language-select">
-{% for language in languages_with_flags %}
-  <option value="{{ language.code }}" data-image="/static/flags/{{ language.flag }}.svg">{{ language.name }}</option>
-{% endfor %}
-</select>
+{#<label for="language-select">{% trans "Choose a language" %}:</label>#}
+{#<select id="language-select">#}
+{#{% for language in languages_with_flags %}#}
+{#  <option value="{{ language.code }}" data-image="/static/flags/{{ language.flag }}.svg">{{ language.name }}</option>#}
+{#{% endfor %}#}
+{#</select>#}
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
   <a class="navbar-brand" href="{% url 'helpy:index' %}">Helpy</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

@@ -1,5 +1,9 @@
-from django.conf import settings
-from . import get_languages_with_flags
-
-def languages_with_flags(request):
-    return {'languages_with_flags': get_languages_with_flags( settings.LANGUAGES )}
+languages_with_flags = [
+    {"code": "uk", "name": "Українська", "flag": "ua"},
+    {"code": "th", "name": "ภาษาไทย", "flag": "th"},
+    {"code": "en", "name": "English", "flag": "us"},
+    {"code": "fr", "name": "Français", "flag": "fr"},
+    {"code": "it", "name": "Italiano", "flag": "it"},
+    {"code": "de", "name": "Deutsch", "flag": "de"},
+    {"code": "ru", "name": "Русский", "flag": "ru"},
+]
