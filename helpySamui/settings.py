@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "widget_tweaks",
     "accounts",
-    "art_event",
+    'art_event.apps.MyAppConfig',
     "helpy",
     "offer",
     "reviews",
@@ -75,7 +75,7 @@ INSTALLED_APPS = [
     # "allauth.socialaccount.providers.facebook",
     # "allauth.socialaccount.providers.twitter",
     # "allauth.socialaccount.providers.linkedin",
-    'art_event.apps.MyAppConfig',
+
 ]
 TELEGRAM_BOT_TOKEN = "your_bot_token_here"
 TELEGRAM_BOT_WEBHOOK_URL = "https://yourdomain.com/telegram-bot/"
