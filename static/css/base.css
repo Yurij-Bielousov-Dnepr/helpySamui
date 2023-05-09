@@ -69,3 +69,37 @@ main p {
   color: #fff;
   margin-bottom: 20px;
 }
+.language-selector {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #f6d55c; /* желтый цвет */
+  border-radius: 10px; /* закругленные углы */
+  padding: 10px; /* добавляем отступы */
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.2); /* добавляем тень */
+}
+
+.language-selector li {
+  margin-right: 10px;
+}
+
+.language-selector li:last-child {
+  margin-right: 0;
+}
+
+.language-selector a {
+  color: #333; /* цвет ссылок */
+  text-decoration: none; /* убираем подчеркивание */
+  font-weight: bold; /* делаем шрифт жирным */
+}
+
+.language-selector a:hover {
+  color: #fff; /* меняем цвет при наведении */
+}
+
+
+
+
+
+

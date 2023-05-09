@@ -19,6 +19,7 @@ class Review_Article(Review):
 
     class Meta:
         unique_together = (("article_title", "article_author", "reviewer_name"),)
+- разобраться с sponsor куда помещать урл сайта?
 
 
 class Review_Event(Review):
